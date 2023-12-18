@@ -1,2 +1,9 @@
-docker build -t llama-cpu-server .
-docker run -p 5000:5000 llama-cpu-server
+$containerCount = docker ps -a -q
+if ($containerCount -gt 0) {
+    Write-Host "Stopping existing containers"
+    docker stop $containerCount
+    docker compose down --remove-orphans
+}
+
+docker build -t llama-web-api .
+docker run -p 5000:5000 llama-web-api
