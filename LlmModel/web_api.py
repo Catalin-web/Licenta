@@ -1,3 +1,4 @@
+import sys
 from flask import Flask, request, jsonify
 from llama_cpp import Llama
 
@@ -15,6 +16,7 @@ def generate_response():
             prompt = data["prompt"]
             max_tokens = int(data["max_tokens"])
             if model is None:
+                print("Load model", file=sys.stderr)
                 model_path = "./llama-2-7b-chat.Q2_K.gguf"
                 model = Llama(model_path=model_path)
             output = model(prompt, max_tokens=max_tokens, echo=True)

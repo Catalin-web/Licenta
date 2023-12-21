@@ -1,0 +1,50 @@
+apiVersion: "v1"
+kind: "List"
+items:
+  - apiVersion: "v1"
+    kind: "Service"
+    metadata:
+      annotations: {}
+      labels: {}
+      name: "order-service"
+    spec:
+      selector:
+        app: "order-service"
+      type: LoadBalancer
+      ports:
+        - name: http
+          port: 8080
+          targetPort: 8080
+          nodePort: 32000
+          protocol: TCP
+  - apiVersion: "apps/v1"
+    kind: "Deployment"
+    metadata:
+      labels:
+        app: "order-service"
+        version: "1.0.0"
+      name: "order-service"
+    spec:
+      replicas: 3
+      selector:
+        matchLabels:
+          app: "order-service"
+          version: "1.0.0"
+      template:
+        metadata:
+          labels:
+            app: "order-service"
+            version: "1.0.0"
+        spec:
+          containers:
+            - image: "order-service:1.0.0"
+              imagePullPolicy: "Never"
+              name: "order-service"
+              resources:
+                limits:
+                  cpu: 500m
+                requests:
+                  cpu: 200m
+              ports:
+                - protocol: TCP
+                  containerPort: 8080

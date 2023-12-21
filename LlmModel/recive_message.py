@@ -1,6 +1,6 @@
 import requests
 
-url = "http://127.0.0.1:5000/generate-response"
+url = "http://localhost:5000/generate-response"
 obj = {
     "prompt": "USER: Generate a list of 5 dogs names. SERVER: ",
     "max_tokens": 100,
