@@ -1,2 +1,4 @@
 Run with:
-`kubectl apply -f order-service.yaml`
+`kubectl apply -f nginx.yaml`
+
+
