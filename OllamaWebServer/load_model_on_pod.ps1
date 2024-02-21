@@ -1,1 +1,0 @@
-kubectl exec -it ollama-pod --container ollama-model -- ollama pull mistral
