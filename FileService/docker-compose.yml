@@ -1,0 +1,42 @@
+version: '3.4'
+
+services:
+  fileservice.webapi:
+    image: ${DOCKER_REGISTRY-}fileservicewebapi
+    build:
+      context: .
+      dockerfile: FileService.WebApi/Dockerfile
+    ports:
+      - "12600:12600"
+    environment:
+      FILESERVICE_BINDING_ADRESS: http://*
+      FILESERVICE_BINDING_PORT: 12600
+      FILESERVICE_MINIO_ENDPOINT: minio:9000
+      FILESERVICE_MINIO_ACCESS_KEY: your_username
+      FILESERVICE_MINIO_SECRET_KEY: your_pasword
+      FILESERVICE_CONNECTION_STRING: mongodb://mongodb:27017/app
+    depends_on:
+      - minio
+      - mongodb
+  
+  minio:
+    image: docker.io/bitnami/minio:2024.2.26
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    environment:
+      MINIO_ROOT_USER: your_username
+      MINIO_ROOT_PASSWORD: your_pasword
+
+  mongodb:
+    image: bitnami/mongodb:6.0.2
+    container_name: mongodb
+    environment:
+      MONGO_INITDB_DATABASE: app
+    ports:
+      - "27017:27017"
+    deploy:
+      resources:
+        limits:
+          cpus: "4.0"
+          memory: 200M

@@ -1,0 +1,39 @@
+# @format
+
+version: '3'
+
+services:
+ hub:
+  build:
+   context: .
+   dockerfile: Dockerfile
+   args:
+    JUPYTERHUB_VERSION: latest
+  restart: always
+  image: jupyterhub
+  container_name: jupyterhub
+  networks:
+   - jupyterhub-network
+  volumes:
+   - './jupyterhub_config.py:/srv/jupyterhub/jupyterhub_config.py:ro'
+   - '/var/run/docker.sock:/var/run/docker.sock:rw'
+   - 'jupyterhub-data:/data'
+   - './authenticator.py:/srv/jupyterhub/authenticator.py'
+  ports:
+   - '8000:8000'
+  environment:
+   # This username will be a JupyterHub admin
+   JUPYTERHUB_ADMIN: admin
+   # All containers will join this network
+   DOCKER_NETWORK_NAME: jupyterhub-network
+   # JupyterHub will spawn this Notebook image for users
+   DOCKER_NOTEBOOK_IMAGE: quay.io/jupyter/base-notebook:latest
+   # Notebook directory inside user image
+   DOCKER_NOTEBOOK_DIR: /home/jovyan/work
+
+volumes:
+ jupyterhub-data:
+
+networks:
+ jupyterhub-network:
+  name: jupyterhub-network
