@@ -1,12 +1,11 @@
 ﻿using Fileservice.Models.Entities;
 using Fileservice.WebApi.Services.NotebookFacade;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Mime;
 
 namespace Fileservice.WebApi.Controllers
 {
     [ApiController]
-    [Route("notebook")]
+    [Route("fileService/notebook")]
     public class NotebookController : ControllerBase
     {
         private readonly INotebookFacade _notebookFacade;
@@ -22,7 +21,7 @@ namespace Fileservice.WebApi.Controllers
         [HttpPost]
         [Route("upload/{notebookName}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<NotebookWithParametersAndMetadata>> UploadNotebook(string notebookName, IFormFile file)
+        public async Task<ActionResult<Notebook>> UploadNotebook(string notebookName, IFormFile file)
         {
             var notebookWithParametersAndMetadata = await _notebookFacade.UploadNotebook(notebookName, file);
             return Ok(notebookWithParametersAndMetadata);
@@ -49,9 +48,9 @@ namespace Fileservice.WebApi.Controllers
         /// </summary>
         /// <response code="200">Get all notebooks.</response>
         [HttpGet]
-        [Route("all")]
+        [Route("")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<NotebookWithParametersAndMetadata>>> GetAllNotebooks()
+        public async Task<ActionResult<IEnumerable<Notebook>>> GetAllNotebooks()
         {
             return Ok(await _notebookFacade.GetAllNotebooks());
         }
@@ -63,7 +62,7 @@ namespace Fileservice.WebApi.Controllers
         [HttpGet]
         [Route("name/{notebookName}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<NotebookWithParametersAndMetadata>> GetNotebookByName(string notebookName)
+        public async Task<ActionResult<Notebook>> GetNotebookByName(string notebookName)
         {
             var notebookWithParametersAndMetadata = await _notebookFacade.GetNotebookByName(notebookName);
             if (notebookWithParametersAndMetadata == null)

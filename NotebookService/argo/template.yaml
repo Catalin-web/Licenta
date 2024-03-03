@@ -1,0 +1,53 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: handle-notebook-
+spec:
+  entrypoint: initialize-notebook
+  arguments:
+    parameters:
+    - name: notebook_service_url
+      value: http://host.docker.internal:12700
+    - name: file_service_url
+      value: http://host.docker.internal:12600
+    - name: scheduled_notebook_id
+      value: 65e35ffc6b5a8446517e29ca
+    - name: notebook_output_file_path
+      value: /tmp/notebook_output.txt
+    - name: input_parameters_output_file_path
+      value: /tmp/input_parameters_output.txt
+    - name: output_parameters_names_output_file_path
+      value: /tmp/output_parameters_names_output.txt
+
+  templates:
+  - name: initialize-notebook
+    inputs:
+      parameters:
+      - name: notebook_service_url
+      - name: file_service_url
+      - name: scheduled_notebook_id
+    outputs:
+      artifacts:
+      - name: notebook_output_file_path
+        path: /tmp/notebook_output.txt
+      - name: input_parameters_output_file_path
+        path: /tmp/input_parameters_output.txt
+      - name: output_parameters_names_output_file_path
+        path: /tmp/output_parameters_names.txt
+    container:
+      # run cowsay with that message input parameter as args
+      image: catalibugnar/initialize_notebook
+      command: [python3, /app/init_notebook.py]
+      args:
+      - --notebook_service_url
+      - "{{inputs.parameters.notebook_service_url}}"
+      - --file_service_url
+      - "{{inputs.parameters.file_service_url}}"
+      - --scheduled_notebook_id
+      - "{{inputs.parameters.scheduled_notebook_id}}"
+      - --notebook_output_file_path
+      - "{{outputs.parameters.notebook_output_file_path}}"
+      - --input_parameters_output_file_path
+      - "{{outputs.parameters.input_parameters_output_file_path}}"
+      - --output_parameters_names_output_file_path
+      - "{{outputs.parameters.output_parameters_names_output_file_path}}"

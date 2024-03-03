@@ -1,0 +1,28 @@
+version: '3.4'
+
+services:
+  notebookservice.webapi:
+    image: ${DOCKER_REGISTRY-}notebookservicewebapi
+    build:
+      context: .
+      dockerfile: NotebookService.WebApi/Dockerfile
+    ports:
+      - "12700:12700"
+    environment:
+      NOTEBOOKSERVICE_BINDING_ADRESS: http://*
+      NOTEBOOKSERVICE_BINDING_PORT: 12700
+      NOTEBOOKSERVICE_CONNECTION_STRING: mongodb://mongodb:27017/app
+    depends_on:
+      - mongodb
+  mongodb:
+    image: bitnami/mongodb:6.0.2
+    container_name: mongodb
+    environment:
+      MONGO_INITDB_DATABASE: app
+    ports:
+      - "27017:27017"
+    deploy:
+      resources:
+        limits:
+          cpus: "4.0"
+          memory: 200M

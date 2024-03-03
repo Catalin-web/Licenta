@@ -7,48 +7,47 @@ namespace Fileservice.WebApi.Services.NotebookFacade
     public class NotebookFacade : INotebookFacade
     {
         private readonly INotebookDataProvider _notebookDataProvider;
-        private readonly INotebookWithParametersAndMetadataDataProvider _notebookWithParametersAndMetadataDataProvider;
-        public NotebookFacade(INotebookDataProvider notebookDataProvider, INotebookWithParametersAndMetadataDataProvider notebookWithParametersAndMetadataDataProvider) 
+        private readonly IMinioNotebookDataProvider _minioNotebookDataProvider;
+        public NotebookFacade(INotebookDataProvider notebookDataProvider, IMinioNotebookDataProvider minioNotebookDataProvider) 
         { 
             _notebookDataProvider = notebookDataProvider;
-            _notebookWithParametersAndMetadataDataProvider = notebookWithParametersAndMetadataDataProvider;
+            _minioNotebookDataProvider = minioNotebookDataProvider;
         }
-        public async Task<NotebookWithParametersAndMetadata> UploadNotebook(string notebookName, IFormFile file)
+        public async Task<Notebook> UploadNotebook(string notebookName, IFormFile file)
         {
             using (var memoryStream = new MemoryStream())
             {
                 await file.CopyToAsync(memoryStream);
                 memoryStream.Position = 0;
-                var notebook = new Notebook()
+                var notebook = new MinioNotebook()
                 {
                     MemoryStream = memoryStream,
                     Name = notebookName
                 };
-                await _notebookDataProvider.UploadNotebookToMinio(notebook, "notebook");
-                var notebookWithParametersAndMetadata = new NotebookWithParametersAndMetadata()
+                await _minioNotebookDataProvider.UploadNotebookToMinio(notebook, "notebook");
+                var notebookWithParametersAndMetadata = new Notebook()
                 {
                     NotebookName = notebookName,
                     BucketName = "notebook",
-                    NotebookParameters = new List<NotebookParameter>(),
                     NotebookTags = new List<string>()
                 };
-                await _notebookWithParametersAndMetadataDataProvider.InsertOrUpdateAsync(notebookWithParametersAndMetadata);
+                await _notebookDataProvider.InsertOrUpdateAsync(notebookWithParametersAndMetadata);
                 return notebookWithParametersAndMetadata;
             }
         }
 
         public async Task<string> DownloadNotebook(MemoryStream memoryStream, string notebookName)
         {
-            return await _notebookDataProvider.DownloadNotebookFromMinio(memoryStream, notebookName, "notebook");
+            return await _minioNotebookDataProvider.DownloadNotebookFromMinio(memoryStream, notebookName, "notebook");
         }
 
-        public async Task<IEnumerable<NotebookWithParametersAndMetadata>> GetAllNotebooks() 
+        public async Task<IEnumerable<Notebook>> GetAllNotebooks() 
         {
-            return await _notebookWithParametersAndMetadataDataProvider.GetAllAsync(_ => true);
+            return await _notebookDataProvider.GetAllAsync(_ => true);
         }
-        public async Task<NotebookWithParametersAndMetadata> GetNotebookByName(string notebookName)
+        public async Task<Notebook> GetNotebookByName(string notebookName)
         {
-            return await _notebookWithParametersAndMetadataDataProvider.GetAsync(notebook => notebook.NotebookName == notebookName);
+            return await _notebookDataProvider.GetAsync(notebook => notebook.NotebookName == notebookName);
         }
     }
 }
