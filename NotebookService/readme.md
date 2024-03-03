@@ -22,3 +22,11 @@ OR:
 `./run-argo-server.ps1`
 
 Ui running on: https://localhost:2746/
+
+
+Deploy:
+1. `cd Terraform`
+2. `terraform init`
+3. `terraform apply`
+
+:)
