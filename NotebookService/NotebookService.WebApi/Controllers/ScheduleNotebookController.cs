@@ -25,8 +25,15 @@ namespace NotebookService.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<ScheduledNotebook>> ScheduleNotebook(ScheduleNotebookRequest scheduleNotebookRequest)
         {
-            var scheduledNotebook = await _scheduleNotebookFacade.ScheduleNotebook(scheduleNotebookRequest);
-            return Ok(scheduledNotebook);
+            try
+            {
+                var scheduledNotebook = await _scheduleNotebookFacade.ScheduleNotebook(scheduleNotebookRequest);
+                return Ok(scheduledNotebook);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         /// <summary>
@@ -38,7 +45,14 @@ namespace NotebookService.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<ScheduledNotebook>>> GetAllScheduledNotebooks()
         {
-            return Ok(await _scheduleNotebookFacade.GetAllScheduledNotebooks());
+            try
+            {
+                return Ok(await _scheduleNotebookFacade.GetAllScheduledNotebooks());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         /// <summary>
@@ -56,7 +70,7 @@ namespace NotebookService.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                return NotFound();
+                return BadRequest(ex);
             }
         }
 
@@ -75,7 +89,7 @@ namespace NotebookService.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                return NotFound();
+                return BadRequest(ex);
             }
         }
     }

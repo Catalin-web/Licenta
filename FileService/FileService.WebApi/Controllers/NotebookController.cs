@@ -1,6 +1,7 @@
 ﻿using Fileservice.Models.Entities;
 using Fileservice.WebApi.Services.NotebookFacade;
 using Microsoft.AspNetCore.Mvc;
+using Minio.Exceptions;
 
 namespace Fileservice.WebApi.Controllers
 {
@@ -23,8 +24,15 @@ namespace Fileservice.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Notebook>> UploadNotebook(string notebookName, IFormFile file)
         {
-            var notebookWithParametersAndMetadata = await _notebookFacade.UploadNotebook(notebookName, file);
-            return Ok(notebookWithParametersAndMetadata);
+            try
+            {
+                var notebookWithParametersAndMetadata = await _notebookFacade.UploadNotebook(notebookName, file);
+                return Ok(notebookWithParametersAndMetadata);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         /// <summary>
@@ -36,10 +44,17 @@ namespace Fileservice.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DownloadNotebook(string notebookName)
         {
-            using(MemoryStream memoryStream = new MemoryStream())
+            try
             {
-                var contentType = await _notebookFacade.DownloadNotebook(memoryStream, notebookName);
-                return File(memoryStream.ToArray(), contentType, notebookName);
+                using(MemoryStream memoryStream = new MemoryStream())
+                {
+                    var contentType = await _notebookFacade.DownloadNotebook(memoryStream, notebookName);
+                    return File(memoryStream.ToArray(), contentType, notebookName);
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
 
@@ -52,7 +67,14 @@ namespace Fileservice.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Notebook>>> GetAllNotebooks()
         {
-            return Ok(await _notebookFacade.GetAllNotebooks());
+            try
+            {
+                return Ok(await _notebookFacade.GetAllNotebooks());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         /// <summary>
@@ -64,12 +86,19 @@ namespace Fileservice.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Notebook>> GetNotebookByName(string notebookName)
         {
-            var notebookWithParametersAndMetadata = await _notebookFacade.GetNotebookByName(notebookName);
-            if (notebookWithParametersAndMetadata == null)
+            try
             {
-                return Ok();
+                var notebookWithParametersAndMetadata = await _notebookFacade.GetNotebookByName(notebookName);
+                if (notebookWithParametersAndMetadata == null)
+                {
+                    return Ok();
+                }
+                return Ok(notebookWithParametersAndMetadata);
             }
-            return Ok(notebookWithParametersAndMetadata);
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

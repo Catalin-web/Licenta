@@ -1,0 +1,3 @@
+module "deployments"{
+    source = "./deployments"
+}

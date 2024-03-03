@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   fileservice:
-    image: ${DOCKER_REGISTRY-}fileservicewebapi
+    image: catalibugnar/fileservice
     build:
       context: ./FileService
       dockerfile: FileService.WebApi/Dockerfile
@@ -20,7 +20,7 @@ services:
       - mongodb
 
   notebookservice:
-    image: ${DOCKER_REGISTRY-}notebookservicewebapi
+    image: catalibugnar/notebookservice
     build:
       context: ./NotebookService
       dockerfile: NotebookService.WebApi/Dockerfile
