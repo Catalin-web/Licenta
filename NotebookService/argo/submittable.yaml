@@ -1,0 +1,15 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: handle-notebook-workflow-
+  namespace: argo
+  labels:
+    workflows.argoproj.io/workflow-template: handle-notebook-workflow
+    submit-from-ui: 'true'
+spec:
+  arguments:
+    parameters:
+      - name: scheduled_notebook_id
+        value: 65e61f7dd92706945575a3de
+  workflowTemplateRef:
+    name: handle-notebook-workflow

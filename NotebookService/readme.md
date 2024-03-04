@@ -10,9 +10,11 @@
 2. 2. Test to see it works
 `argo submit -n argo --watch https://raw.githubusercontent.com/argoproj/argo-workflows/main/examples/hello-world.yaml`
 
-3. Port forward
-`kubectl port-forward svc/argo-server -n argo 2746:2746`
+`argo submit -n default --watch ./argo/template.yaml`
+`argo submit -n default --watch ./argo/submittable.yaml`
 
+3. Port forward
+`kubectl port-forward svc/argo-server 2746:2746`
 OR:
 
 0. Create:
@@ -23,10 +25,13 @@ OR:
 
 Ui running on: https://localhost:2746/
 
+# Create/submit
 
-Deploy:
-1. `cd Terraform`
-2. `terraform init`
-3. `terraform apply`
+`argo template create .\argo\template.yaml`
+`argo submit -n default .\argo\submittable.yaml -p scheduled_notebook_id=65e61f7dd92706945575a3de`
 
-:)
+ARGO NAMESPACE:
+kubectl port-forward -n argo svc/argo-server 2746:2746
+
+argo template -n argo create .\argo\template.yaml
+argo submit -n argo --watch .\argo\submittable.yaml -p scheduled_notebook_id=65e62805012c68e7c67c6ade

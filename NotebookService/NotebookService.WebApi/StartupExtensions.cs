@@ -1,6 +1,9 @@
 ﻿using Microsoft.OpenApi.Models;
 using NotebookService.DataStore.Mongo;
 using NotebookService.DataStore.Mongo.ScheduleNotebookProvider;
+using NotebookService.WebApi.Clients.Argo;
+using NotebookService.WebApi.Clients.ArgoWorkflowClient;
+using NotebookService.WebApi.Services;
 using NotebookService.WebApi.Services.ScheduleNotebookFacade;
 using NotebookService.WebApi.Settings;
 
@@ -46,10 +49,25 @@ namespace NotebookService.WebApi
             services.AddSingleton<IMongoDataContext>(mongoDataContext);
             return services;
         }
-
-        public static IServiceCollection SetupServices(this IServiceCollection services)
+         
+        public static IServiceCollection SetupServices(this IServiceCollection services, ISettingsProvider settingsProvider)
         {
             services.AddSingleton<IScheduleNotebookFacade, ScheduleNotebookFacade>();
+            services.AddHttpClient<IArgoWorkflowClient, ArgoWorkflowClient>(client =>
+            {
+                client.BaseAddress = settingsProvider.ArgoBaseUrl;
+            }).ConfigurePrimaryHttpMessageHandler((c) =>
+                 new HttpClientHandler()
+                 {
+                     ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; }
+                 }
+            );
+            return services;
+        }
+
+        public static IServiceCollection SetupBackgroundServices(this IServiceCollection services)
+        {
+            services.AddHostedService<ScheduleNotebookBackgroundService>();
             return services;
         }
     }

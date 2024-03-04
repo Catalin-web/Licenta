@@ -1,4 +1,4 @@
-resource "kubernetes_deployment" "minio" {
+resource "kubernetes_deployment" "minio_deployment" {
     metadata {
         name = "minio"
     }
@@ -35,4 +35,19 @@ resource "kubernetes_deployment" "minio" {
         }
     }
 }
-
+// Load balancer:
+resource "kubernetes_service" "minio_service" {
+    metadata {
+        name = "minio"
+    }
+    spec {
+        selector = {
+            app = "minio"
+        }
+        port {
+            port = 9000
+            target_port = 9000
+        }
+        type = "ClusterIP"
+    }
+}

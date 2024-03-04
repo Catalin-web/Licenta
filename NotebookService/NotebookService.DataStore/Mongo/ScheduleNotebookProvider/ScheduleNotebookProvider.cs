@@ -16,27 +16,14 @@ namespace NotebookService.DataStore.Mongo.ScheduleNotebookProvider
 
         protected IMongoCollection<ScheduledNotebook> Collection => _context.Database.GetCollection<ScheduledNotebook>(_collectionName);
 
-        public async Task InsertOrUpdateAsync(ScheduledNotebook scheduledNotebook)
+        public async Task InsertAsync(ScheduledNotebook scheduledNotebook)
         {
-            var alreadyExistingItem = await GetAsync(notebook => notebook.NotebookName == scheduledNotebook.NotebookName);
-            if (alreadyExistingItem != null)
-            {
-                await UpdateAsync(notebook => notebook.NotebookName == scheduledNotebook.NotebookName, scheduledNotebook);
-            }
-            else
-            {
-                await Collection.InsertOneAsync(scheduledNotebook);
-            }
+            await Collection.InsertOneAsync(scheduledNotebook);
         }
 
         public async Task UpdateAsync(Expression<Func<ScheduledNotebook, bool>> match, ScheduledNotebook scheduledNotebook)
         {
-            var alreadyExistingItem = await GetAsync(notebook => notebook.NotebookName == scheduledNotebook.NotebookName);
-            if (alreadyExistingItem != null)
-            {
-                scheduledNotebook.Id = alreadyExistingItem.Id;
-                await Collection.ReplaceOneAsync(match, scheduledNotebook);
-            }
+            await Collection.ReplaceOneAsync(match, scheduledNotebook);
         }
 
         public async Task<ScheduledNotebook> GetAsync(Expression<Func<ScheduledNotebook, bool>> match)

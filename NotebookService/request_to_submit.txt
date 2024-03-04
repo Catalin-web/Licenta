@@ -1,0 +1,9 @@
+{"namespace":"default",
+"resourceKind":"WorkflowTemplate",
+"resourceName":"handle-notebook-workflow",
+"submitOptions": {
+	"entryPoint":"handle",
+	"parameters":["scheduled_notebook_id=catalin"],
+	"labels":""
+	}
+}

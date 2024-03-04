@@ -29,7 +29,10 @@ def finish_notebook(
     output_parameters: list[NotebookParameter] = []
     with open(output_parameters_file_path, "r") as file:
         for line in file.readlines():
-            name, value = line.strip().split("=")
+            splitted = line.strip().split("=")
+            if len(splitted) != 2:
+                continue
+            name, value = splitted
             output_parameters.append(NotebookParameter(name, value))
     finish_scheduled_notebook_request = FinishScheduledNotebookRequest(
         scheduled_notebook_id, Status.SUCCEDED, output_parameters

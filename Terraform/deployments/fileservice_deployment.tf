@@ -27,7 +27,7 @@ resource "kubernetes_deployment" "fileservice" {
                         value = "http://*"
                     }
                     env {
-                        name = "FILESERVICE_BINDING_PORT"
+                        name = "FILESERVICE_PORT"
                         value = "12600"
                     }
                     env {
@@ -51,4 +51,21 @@ resource "kubernetes_deployment" "fileservice" {
         }
     }
 }
+// Load balancer:
+resource "kubernetes_service" "fileservice_service" {
+    metadata {
+        name = "fileservice"
+    }
+    spec {
+        selector = {
+            app = "fileservice"
+        }
+        port {
+            port = 12600
+            target_port = 12600
+        }
+        type = "ClusterIP"
+    }
+}
+
 

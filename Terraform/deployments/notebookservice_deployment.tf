@@ -1,4 +1,4 @@
-resource "kubernetes_deployment" "notebookservice" {
+resource "kubernetes_deployment" "notebookservice_deployment" {
     metadata {
         name = "notebookservice"
     }
@@ -18,7 +18,7 @@ resource "kubernetes_deployment" "notebookservice" {
             spec {
                 container {
                     name = "notebookservice"
-                    image = "catalibugnar/notebookservice:latest@sha256:57caa96c079732795910fd78fd12d27adad2fc16833355c37163abc2df669ad6"
+                    image = "catalibugnar/notebookservice:latest@sha256:ca449f8a680e6bf4cbeffff47ddbdb7cfa002968cc04e5d77411cb941a38880d"
                     port {
                         container_port = 12700
                     }
@@ -27,16 +27,39 @@ resource "kubernetes_deployment" "notebookservice" {
                         value = "http://*"
                     }
                     env {
-                        name = "NOTEBOOKSERVICE_BINDING_PORT"
+                        name = "NOTEBOOKSERVICE_PORT"
                         value = "12700"
                     }
                     env {
                         name = "NOTEBOOKSERVICE_CONNECTION_STRING"
                         value = "mongodb://mongodb.default.svc.cluster.local:27017/app"
                     }
+                    env {
+                        name = "NOTEBOOKSERVICE_SCHEDULE_NOTEBOOK_DELAY"
+                        value = "1"
+                    }
+                    env {
+                        name = "NOTEBOOKSERVICE_ARGO_BASE_URL"
+                        value = "https://argo-server.argo.svc.cluster.local:2746"
+                    }
                 }
             }
         }
     }
 }
-
+// Load balancer:
+resource "kubernetes_service" "notebookservice_service" {
+    metadata {
+        name = "notebookservice"
+    }
+    spec {
+        selector = {
+            app = "notebookservice"
+        }
+        port {
+            port = 12700
+            target_port = 12700
+        }
+        type = "ClusterIP"
+    }
+}

@@ -1,1 +1,2 @@
-variable
+input_variable
+random_variable

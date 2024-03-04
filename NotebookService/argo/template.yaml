@@ -1,25 +1,49 @@
 apiVersion: argoproj.io/v1alpha1
-kind: Workflow
+kind: WorkflowTemplate
 metadata:
-  generateName: handle-notebook-
+  name: handle-notebook-workflow
 spec:
-  entrypoint: initialize-notebook
+  entrypoint: handle
   arguments:
     parameters:
-    - name: notebook_service_url
-      value: http://host.docker.internal:12700
-    - name: file_service_url
-      value: http://host.docker.internal:12600
     - name: scheduled_notebook_id
-      value: 65e35ffc6b5a8446517e29ca
-    - name: notebook_output_file_path
-      value: /tmp/notebook_output.txt
-    - name: input_parameters_output_file_path
-      value: /tmp/input_parameters_output.txt
-    - name: output_parameters_names_output_file_path
-      value: /tmp/output_parameters_names_output.txt
+      value: 65e61f7dd92706945575a3de
 
   templates:
+  - name: handle
+    steps:
+    - - name: first
+        template: initialize-notebook
+        arguments:
+          parameters:
+          - name: notebook_service_url
+            value: http://notebookservice.default.svc.cluster.local:12700
+          - name: file_service_url
+            value: http://fileservice.default.svc.cluster.local:12600
+          - name: scheduled_notebook_id
+            value: "{{workflow.parameters.scheduled_notebook_id}}"
+    - - name: second
+        template: run-notebook
+        arguments:
+          artifacts:
+          - name: notebook_input_path
+            from: "{{steps.first.outputs.artifacts.notebook_output_file_path}}"
+          - name: input_parameters_file_path
+            from: "{{steps.first.outputs.artifacts.input_parameters_output_file_path}}"
+          - name: output_parameters_file_path
+            from: "{{steps.first.outputs.artifacts.output_parameters_names_output_file_path}}"
+    - - name: third
+        template: finish-notebook
+        arguments:
+          parameters:
+          - name: notebook_service_url
+            value: http://notebookservice.default.svc.cluster.local:12700
+          - name: scheduled_notebook_id
+            value: "{{workflow.parameters.scheduled_notebook_id}}"
+          artifacts:
+          - name: output_parameters_file_path
+            from: "{{steps.second.outputs.artifacts.output_parameters_output_file_path}}"
+
   - name: initialize-notebook
     inputs:
       parameters:
@@ -29,11 +53,11 @@ spec:
     outputs:
       artifacts:
       - name: notebook_output_file_path
-        path: /tmp/notebook_output.txt
+        path: /notebook_output.txt
       - name: input_parameters_output_file_path
-        path: /tmp/input_parameters_output.txt
+        path: /input_parameters_output.txt
       - name: output_parameters_names_output_file_path
-        path: /tmp/output_parameters_names.txt
+        path: /output_parameters_names.txt
     container:
       # run cowsay with that message input parameter as args
       image: catalibugnar/initialize_notebook
@@ -46,8 +70,55 @@ spec:
       - --scheduled_notebook_id
       - "{{inputs.parameters.scheduled_notebook_id}}"
       - --notebook_output_file_path
-      - "{{outputs.parameters.notebook_output_file_path}}"
+      - "/notebook_output.txt"
       - --input_parameters_output_file_path
-      - "{{outputs.parameters.input_parameters_output_file_path}}"
+      - "/input_parameters_output.txt"
       - --output_parameters_names_output_file_path
-      - "{{outputs.parameters.output_parameters_names_output_file_path}}"
+      - "/output_parameters_names.txt"
+
+  - name: run-notebook
+    inputs:
+      artifacts:
+        - name: notebook_input_path
+          path: /notebook_output.txt
+        - name: input_parameters_file_path
+          path: /input_parameters_output.txt
+        - name: output_parameters_file_path
+          path: /output_parameters_names.txt
+    outputs:
+      artifacts:
+      - name: output_parameters_output_file_path
+        path: /output_parameters_output.txt
+    container:
+      # run cowsay with that message input parameter as args
+      image: catalibugnar/run_notebook
+      command: [python3, /app/run_notebook.py]
+      args:
+      - --notebook_input_path
+      - "/notebook_output.txt"
+      - --input_parameters_file_path
+      - "/input_parameters_output.txt"
+      - --output_parameters_file_path
+      - "/output_parameters_names.txt"
+      - --output_parameters_output_file_path
+      - "/output_parameters_output.txt"
+
+  - name: finish-notebook
+    inputs:
+      parameters:
+      - name: notebook_service_url
+      - name: scheduled_notebook_id
+      artifacts:
+      - name: output_parameters_file_path
+        path: /output_parameters_file_path.txt
+    container:
+      # run cowsay with that message input parameter as args
+      image: catalibugnar/finish_notebook@sha256:4cb7790b592b1527a67b67a69b34572e29cf536218ecb849f08955e6fb1979cc
+      command: [python3, /app/finish_notebook.py]
+      args:
+      - --notebook_service_url
+      - "{{inputs.parameters.notebook_service_url}}"
+      - --scheduled_notebook_id
+      - "{{inputs.parameters.scheduled_notebook_id}}"
+      - --output_parameters_file_path
+      - "/output_parameters_file_path.txt"

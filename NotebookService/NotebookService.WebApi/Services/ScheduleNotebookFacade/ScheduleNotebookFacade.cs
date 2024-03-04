@@ -25,7 +25,7 @@ namespace NotebookService.WebApi.Services.ScheduleNotebookFacade
                 OutputParametersNames = scheduleNotebookRequest.OutputParametersNames,
                 OutputParameters = new List<NotebookParameter>()
             };
-            await _scheduleNotebookProvider.InsertOrUpdateAsync(scheduledNotebook);
+            await _scheduleNotebookProvider.InsertAsync(scheduledNotebook);
             return scheduledNotebook;
         }
 
@@ -51,6 +51,16 @@ namespace NotebookService.WebApi.Services.ScheduleNotebookFacade
             scheduledNotebook.Progress = updateProgressOfScheduledNotebookRequest.Progress;
             await _scheduleNotebookProvider.UpdateAsync(scheduledNotebook => scheduledNotebook.Id == updateProgressOfScheduledNotebookRequest.ScheduledNotebookId, scheduledNotebook);
             return scheduledNotebook;
+        }
+
+        public async Task<ScheduledNotebook> GetAndUpdateFirstScheduledNotebook()
+        {
+            var firstScheduledNotebook = await _scheduleNotebookProvider.GetAsync(scheduledNotebook => scheduledNotebook.Progress == Progress.CREATED);
+            if (firstScheduledNotebook == null)
+                return null;
+            firstScheduledNotebook.Progress = Progress.QUEUED;
+            await _scheduleNotebookProvider.UpdateAsync(scheduledNotebook => scheduledNotebook.Id == firstScheduledNotebook.Id, firstScheduledNotebook);
+            return firstScheduledNotebook;
         }
     }
 }

@@ -27,5 +27,21 @@ namespace NotebookService.WebApi.Settings
                 return Environment.GetEnvironmentVariable("NOTEBOOKSERVICE_CONNECTION_STRING") ?? "mongodb://localhost:27017/app";
             }
         }
+
+        public TimeSpan ScheduleNotebookDelay
+        {
+            get
+            {
+                return TimeSpan.FromSeconds(int.Parse(Environment.GetEnvironmentVariable("NOTEBOOKSERVICE_SCHEDULE_NOTEBOOK_DELAY") ?? "1"));
+            }
+        }
+
+        public Uri ArgoBaseUrl
+        {
+            get
+            {
+                return new Uri(Environment.GetEnvironmentVariable("NOTEBOOKSERVICE_ARGO_BASE_URL") ?? "https://localhost:2746");
+            }
+        }
     }
 }

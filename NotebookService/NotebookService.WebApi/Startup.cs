@@ -17,7 +17,8 @@ namespace NotebookService.WebApi
             services.SetupSwagger();
             services.SetupDataContext(settingsProvider);
             services.SetupDatabase();
-            services.SetupServices();
+            services.SetupServices(settingsProvider);
+            services.SetupBackgroundServices();
             services.AddCors();
 
             services.AddControllers(options =>
