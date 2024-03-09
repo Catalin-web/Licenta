@@ -1,0 +1,33 @@
+3) Services test
+
+TODOS:
+a) Unit tests for services
+b) Integration tests for services
+c) E2E tests
+
+1) Scheduled notebook history
+
+TODOS:
+a) Delete notebook on finish
+b) Add history to a druid DB
+c) Edd endpoints to expose the history (get all)
+
+2) Workflow pentru generarea parametriilor
+
+TODOS:
+a) Create a docker image to generate text based on a prompt. The docker image should preinstall the image for quick load.
+b) NotebookService: Add parameter types
+c) Add a new step in the workflow: Generate parameter, and pass them to the next
+d) Images inputs
+
+4) Notebooks triggering other notebooks
+
+TODOS:
+a) Create a workflow for expanding notebooks
+b) Save the graph between workflow somehow to a db
+c) On the finish step trigger other execution
+d) Workflow history in druid
+
+5) Salt minion to connect current system to the web app, and execute code on your own machine (so it would be faster)
+
+6) Share workflow to friends (social network)

@@ -13,7 +13,7 @@ services:
       NOTEBOOKSERVICE_BINDING_PORT: 12700
       NOTEBOOKSERVICE_CONNECTION_STRING: mongodb://mongodb:27017/app
       NOTEBOOKSERVICE_SCHEDULE_NOTEBOOK_DELAY: 1
-      NOTEBOOKSERVICE_ARGO_BASE_URL: http://localhost:2746
+      NOTEBOOKSERVICE_ARGO_BASE_URL: https://host.docker.internal:2746
     depends_on:
       - mongodb
   mongodb:
