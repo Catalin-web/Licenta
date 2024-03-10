@@ -9,6 +9,7 @@ namespace NotebookService.Clients
         private const string GetAllScheduledNotebookRoute = "notebookService/scheduleNotebook";
         private const string FinishScheduledNotebookRoute = "notebookService/scheduleNotebook/finish";
         private const string UpdateStatusScheduledNotebookRoute = "notebookService/scheduleNotebook/updateStatus";
+        private const string GetAllHistoryOfScheduledNotebookRoute = "notebookService/scheduleNotebook/history";
 
         public async Task<ScheduledNotebook> ScheduleNotebookAsync(ScheduleNotebookRequest request)
         {
@@ -28,6 +29,11 @@ namespace NotebookService.Clients
         public async Task<ScheduledNotebook> UpdateProgressOfScheaduledNotebookAsync(UpdateProgressOfScheduledNotebookRequest updateProgressOfScheduledNotebookRequest)
         {
             return await PostAsync<ScheduledNotebook>(updateProgressOfScheduledNotebookRequest, UpdateStatusScheduledNotebookRoute);
+        }
+
+        public async Task<IEnumerable<ScheduledNotebook>> GetAllHistoryOfScheduledNotebook()
+        {
+            return await GetAsync<IEnumerable<ScheduledNotebook>>(GetAllHistoryOfScheduledNotebookRoute);
         }
     }
 }

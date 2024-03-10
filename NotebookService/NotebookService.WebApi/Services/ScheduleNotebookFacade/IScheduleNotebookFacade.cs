@@ -10,5 +10,6 @@ namespace NotebookService.WebApi.Services.ScheduleNotebookFacade
         Task<ScheduledNotebook> FinishScheduledNotebook(FinishScheduledNotebookRequest finishScheduledNotebookRequest);
         Task<ScheduledNotebook> UpdateProgressOfScheduledNotebook(UpdateProgressOfScheduledNotebookRequest updateProgressOfScheduledNotebookRequest);
         Task<ScheduledNotebook> GetAndUpdateFirstScheduledNotebook();
+        Task<IEnumerable<ScheduledNotebook>> GetAllHistoryOfScheduledNotebook();
     }
 }

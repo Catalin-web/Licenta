@@ -92,5 +92,24 @@ namespace NotebookService.WebApi.Controllers
                 return BadRequest(ex);
             }
         }
+
+        /// <summary>
+        /// Get all history of scheduled notebooks
+        /// </summary>
+        /// <response code="200">Get all history of scheduled notebooks.</response>
+        [HttpGet]
+        [Route("history")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<ScheduledNotebook>>> GetAllHistoryOfScheduledNotebook()
+        {
+            try
+            {
+                return Ok(await _scheduleNotebookFacade.GetAllHistoryOfScheduledNotebook());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
     }
 }

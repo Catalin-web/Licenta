@@ -51,7 +51,10 @@ namespace NotebookService.Tests.Integration
                 Status = Status.SUCCEDED,
                 OutputParameters = new List<NotebookParameter>()
             };
+            var scheduledNotebookBefore = (await _scheduledNotebookClient.GetAllScheduledNotebookAsync()).FirstOrDefault(scheduledNotebook => scheduledNotebook.NotebookName == notebookName);
             var finishedScheduledNotebook = await _scheduledNotebookClient.FinishScheduledNotebookAsync(finishScheduledNotebook);
+            var scheduledNotebookAfter = (await _scheduledNotebookClient.GetAllScheduledNotebookAsync()).FirstOrDefault(scheduledNotebook => scheduledNotebook.NotebookName == notebookName);
+            var historyOfScheduledNotebook = (await _scheduledNotebookClient.GetAllHistoryOfScheduledNotebook()).FirstOrDefault(scheduledNotebook => scheduledNotebook.NotebookName == notebookName);
 
             Assert.NotNull(finishedScheduledNotebook);
             Assert.Equal(notebookName, finishedScheduledNotebook.NotebookName);
@@ -60,6 +63,10 @@ namespace NotebookService.Tests.Integration
             Assert.Empty(finishedScheduledNotebook.OutputParameters);
             Assert.False(string.IsNullOrEmpty(finishedScheduledNotebook.Id));
             Assert.Equal(Status.SUCCEDED, finishedScheduledNotebook.Status);
+            Assert.NotNull(scheduledNotebookBefore);
+            Assert.Null(scheduledNotebookAfter);
+            Assert.NotNull(historyOfScheduledNotebook);
+            Assert.Equal(notebookName,historyOfScheduledNotebook.NotebookName);
         }
 
         [Fact]

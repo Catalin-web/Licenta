@@ -1,5 +1,6 @@
 ﻿using Microsoft.OpenApi.Models;
 using NotebookService.DataStore.Mongo;
+using NotebookService.DataStore.Mongo.ScheduleNotebookHistoryProvider;
 using NotebookService.DataStore.Mongo.ScheduleNotebookProvider;
 using NotebookService.WebApi.Clients.Argo;
 using NotebookService.WebApi.Clients.ArgoWorkflowClient;
@@ -45,6 +46,7 @@ namespace NotebookService.WebApi
         public static IServiceCollection SetupDatabase(this IServiceCollection services)
         {
             services.AddSingleton<IScheduleNotebookProvider, ScheduleNotebookProvider>();
+            services.AddSingleton<IScheduleNotebookHistoryProvider, ScheduleNotebookHistoryProvider>();
             return services;
         }
 

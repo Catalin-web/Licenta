@@ -1,4 +1,5 @@
-﻿using NotebookService.DataStore.Mongo.ScheduleNotebookProvider;
+﻿using NotebookService.DataStore.Mongo.ScheduleNotebookHistoryProvider;
+using NotebookService.DataStore.Mongo.ScheduleNotebookProvider;
 using NotebookService.Models.Entities.ScheduleNotebook;
 using NotebookService.Models.Requests;
 
@@ -7,9 +8,11 @@ namespace NotebookService.WebApi.Services.ScheduleNotebookFacade
     public class ScheduleNotebookFacade : IScheduleNotebookFacade
     {
         private readonly IScheduleNotebookProvider _scheduleNotebookProvider;
-        public ScheduleNotebookFacade(IScheduleNotebookProvider scheduleNotebookProvider)
+        private readonly IScheduleNotebookHistoryProvider _scheduleNotebookHistoryProvider;
+        public ScheduleNotebookFacade(IScheduleNotebookProvider scheduleNotebookProvider, IScheduleNotebookHistoryProvider scheduleNotebookHistoryProvider)
         {
             _scheduleNotebookProvider = scheduleNotebookProvider;
+            _scheduleNotebookHistoryProvider = scheduleNotebookHistoryProvider;
         }
 
         public async Task<ScheduledNotebook> ScheduleNotebook(ScheduleNotebookRequest scheduleNotebookRequest)
@@ -42,6 +45,8 @@ namespace NotebookService.WebApi.Services.ScheduleNotebookFacade
             scheduledNotebook.Progress = Progress.COMPLETED;
             scheduledNotebook.FinishedAt = DateTime.UtcNow;
             await _scheduleNotebookProvider.UpdateAsync(scheduledNotebook => scheduledNotebook.Id == finishScheduledNotebookRequest.ScheduledNotebookId, scheduledNotebook);
+            await _scheduleNotebookProvider.DeleteAsync(scheduledNotebook => scheduledNotebook.Id == finishScheduledNotebookRequest.ScheduledNotebookId);
+            await _scheduleNotebookHistoryProvider.InsertAsync(scheduledNotebook);
             return scheduledNotebook;
         }
 
@@ -61,6 +66,11 @@ namespace NotebookService.WebApi.Services.ScheduleNotebookFacade
             firstScheduledNotebook.Progress = Progress.QUEUED;
             await _scheduleNotebookProvider.UpdateAsync(scheduledNotebook => scheduledNotebook.Id == firstScheduledNotebook.Id, firstScheduledNotebook);
             return firstScheduledNotebook;
+        }
+
+        public async Task<IEnumerable<ScheduledNotebook>> GetAllHistoryOfScheduledNotebook()
+        {
+            return await _scheduleNotebookHistoryProvider.GetAllAsync(notebook => true);
         }
     }
 }
