@@ -5,12 +5,12 @@ a) Unit tests for services ??
 b) Integration tests for services X
 c) E2E tests ??
 
-2) Scheduled notebook history
+2) Scheduled notebook history X
 
 TODOS:
 a) Delete notebook on finish X
-b) Add history to a druid DB 
-c) Edd endpoints to expose the history (get all)
+b) Add history to a druid DB X
+c) Edd endpoints to expose the history (get all) X
 
 3) Workflow pentru generarea parametriilor
 
