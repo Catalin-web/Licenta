@@ -11,6 +11,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotebookService.DataStore",
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{9F34F235-5A60-4759-8F86-C995E071580E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{7B66697F-88BF-43CF-8044-030C9B078DC4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotebookService.Tests.Integration", "NotebookService.Tests.Integration\NotebookService.Tests.Integration.csproj", "{CB5135AE-E313-4927-AE4D-AA640A714ACC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotebookService.Clients", "NotebookService.Clients\NotebookService.Clients.csproj", "{F833EE2F-39E9-456D-B51A-07F969328231}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,9 +39,21 @@ Global
 		{9F34F235-5A60-4759-8F86-C995E071580E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F34F235-5A60-4759-8F86-C995E071580E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9F34F235-5A60-4759-8F86-C995E071580E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB5135AE-E313-4927-AE4D-AA640A714ACC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB5135AE-E313-4927-AE4D-AA640A714ACC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB5135AE-E313-4927-AE4D-AA640A714ACC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB5135AE-E313-4927-AE4D-AA640A714ACC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F833EE2F-39E9-456D-B51A-07F969328231}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F833EE2F-39E9-456D-B51A-07F969328231}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F833EE2F-39E9-456D-B51A-07F969328231}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F833EE2F-39E9-456D-B51A-07F969328231}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CB5135AE-E313-4927-AE4D-AA640A714ACC} = {7B66697F-88BF-43CF-8044-030C9B078DC4}
+		{F833EE2F-39E9-456D-B51A-07F969328231} = {7B66697F-88BF-43CF-8044-030C9B078DC4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B79141F9-C2DA-4EE5-A5FA-2AF250056058}

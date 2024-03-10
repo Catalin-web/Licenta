@@ -8,7 +8,7 @@ processors:
 
 exporters:
   prometheus:
-    namespace: assetservice-dev
+    namespace: notebookservice
     endpoint: "0.0.0.0:8889"
     resource_to_telemetry_conversion:
       enabled: true
