@@ -1,18 +1,18 @@
-3) Services test
+1) Services test
 
 TODOS:
-a) Unit tests for services
-b) Integration tests for services
-c) E2E tests
+a) Unit tests for services ??
+b) Integration tests for services X
+c) E2E tests ??
 
-1) Scheduled notebook history
+2) Scheduled notebook history
 
 TODOS:
 a) Delete notebook on finish
 b) Add history to a druid DB
 c) Edd endpoints to expose the history (get all)
 
-2) Workflow pentru generarea parametriilor
+3) Workflow pentru generarea parametriilor
 
 TODOS:
 a) Create a docker image to generate text based on a prompt. The docker image should preinstall the image for quick load.
