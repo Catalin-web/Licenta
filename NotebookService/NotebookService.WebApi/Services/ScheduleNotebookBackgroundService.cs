@@ -1,7 +1,4 @@
-﻿
-
-using NotebookService.WebApi.Clients.Argo;
-using NotebookService.WebApi.Clients.ArgoWorkflowClient;
+﻿using NotebookService.WebApi.Clients.ArgoWorkflowClient;
 using NotebookService.WebApi.Services.ScheduleNotebookFacade;
 using NotebookService.WebApi.Settings;
 
@@ -12,11 +9,13 @@ namespace NotebookService.WebApi.Services
         private readonly IScheduleNotebookFacade _scheduleNotebookFacade;
         private readonly IArgoWorkflowClient _argoWorkflowClient;
         private readonly TimeSpan _scheduleNotebookDelay;
-        public ScheduleNotebookBackgroundService(IScheduleNotebookFacade scheduleNotebookFacade,IArgoWorkflowClient argoWorkflowClient, ISettingsProvider settingsProvider) 
+        private readonly ILogger<ScheduleNotebookBackgroundService> _logger;
+        public ScheduleNotebookBackgroundService(ILogger<ScheduleNotebookBackgroundService> logger, IScheduleNotebookFacade scheduleNotebookFacade,IArgoWorkflowClient argoWorkflowClient, ISettingsProvider settingsProvider) 
         {
             _scheduleNotebookFacade = scheduleNotebookFacade;
             _argoWorkflowClient = argoWorkflowClient;
             _scheduleNotebookDelay = settingsProvider.ScheduleNotebookDelay;
+            _logger = logger;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -35,7 +34,7 @@ namespace NotebookService.WebApi.Services
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex);
+                    _logger.LogError(ex.Message);
                 }
             }
         }

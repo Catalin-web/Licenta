@@ -6,6 +6,7 @@
         int Port { get; }
         string ConnectionString { get; }
         TimeSpan ScheduleNotebookDelay { get; }
-        public Uri ArgoBaseUrl { get; }
+        Uri ArgoBaseUrl { get; }
+        Uri OtelUrl { get; }
     }
 }

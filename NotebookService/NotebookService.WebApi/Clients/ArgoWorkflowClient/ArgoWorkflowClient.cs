@@ -8,9 +8,11 @@ namespace NotebookService.WebApi.Clients.Argo
     {
         private string _workflowTemplatesPath = "api/v1/workflows/argo/submit";
         private HttpClient _httpClient;
-        public ArgoWorkflowClient(HttpClient httpClient)
+        private readonly ILogger<ArgoWorkflowClient> _logger;
+        public ArgoWorkflowClient(ILogger<ArgoWorkflowClient> logger, HttpClient httpClient)
         { 
             _httpClient = httpClient;
+            _logger = logger;
         }
 
         public async Task ScheduleExecution(string scheduledNotebookId)
@@ -29,7 +31,7 @@ namespace NotebookService.WebApi.Clients.Argo
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                _logger.LogError(ex.Message);
             }
         }
     }

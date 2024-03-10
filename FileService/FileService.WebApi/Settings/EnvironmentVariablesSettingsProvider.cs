@@ -51,5 +51,13 @@ namespace Fileservice.WebApi.Settings
                 return Environment.GetEnvironmentVariable("FILESERVICE_MINIO_SECRET_KEY") ?? "secret_key";
             }
         }
+
+        public Uri OtelUrl
+        {
+            get
+            {
+                return new Uri(Environment.GetEnvironmentVariable("OTEL_URL") ?? "https://localhost:4317");
+            }
+        }
     }
 }

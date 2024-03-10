@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34607.119
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotebookService.WebApi", "NotebookService.WebApi\NotebookService.WebApi.csproj", "{F6AB5602-C2FA-4230-A608-DD1F128A6336}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotebookService.WebApi", "NotebookService.WebApi\NotebookService.WebApi.csproj", "{F6AB5602-C2FA-4230-A608-DD1F128A6336}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotebookService.Models", "NotebookService.Models\NotebookService.Models.csproj", "{9B5D072D-50C6-4820-8E86-ED62FCFA1C5C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotebookService.Models", "NotebookService.Models\NotebookService.Models.csproj", "{9B5D072D-50C6-4820-8E86-ED62FCFA1C5C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotebookService.DataStore", "NotebookService.DataStore\NotebookService.DataStore.csproj", "{CA7F5DB4-2D31-4FD1-AF55-7A224F2534A5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotebookService.DataStore", "NotebookService.DataStore\NotebookService.DataStore.csproj", "{CA7F5DB4-2D31-4FD1-AF55-7A224F2534A5}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{9F34F235-5A60-4759-8F86-C995E071580E}"
 EndProject

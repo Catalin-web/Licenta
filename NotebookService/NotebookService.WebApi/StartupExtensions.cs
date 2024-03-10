@@ -6,6 +6,11 @@ using NotebookService.WebApi.Clients.ArgoWorkflowClient;
 using NotebookService.WebApi.Services;
 using NotebookService.WebApi.Services.ScheduleNotebookFacade;
 using NotebookService.WebApi.Settings;
+using OpenTelemetry.Exporter;
+using OpenTelemetry.Logs;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 
 namespace NotebookService.WebApi
 {
@@ -69,6 +74,35 @@ namespace NotebookService.WebApi
         {
             services.AddHostedService<ScheduleNotebookBackgroundService>();
             return services;
+        }
+
+        public static IServiceCollection SetupOpenTelemetry(this IServiceCollection services, ISettingsProvider settingsProvider)
+        {
+            services.AddOpenTelemetry()
+                .WithTracing(builder =>
+                {
+                    builder
+                        .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("Notebook Service"))
+                        .AddAspNetCoreInstrumentation()
+                        .AddHttpClientInstrumentation()
+                        .AddOtlpExporter(options =>
+                        {
+                            options.Endpoint = settingsProvider.OtelUrl;
+                        })
+                        .AddConsoleExporter();
+                })
+                .WithMetrics(builder =>
+                {
+                    builder
+                        .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("Notebook Service"))
+                        .AddAspNetCoreInstrumentation()
+                        .AddOtlpExporter(options =>
+                        {
+                            options.Endpoint = settingsProvider.OtelUrl;
+                        })
+                        .AddConsoleExporter();
+                });
+            return  services;
         }
     }
 }

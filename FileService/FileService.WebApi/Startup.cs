@@ -14,6 +14,7 @@ namespace Userservice.WebApi
         {
             ISettingsProvider settingsProvider = services
                 .SetupSettings();
+            services.SetupOpenTelemetry(settingsProvider);
             services.SetupSwagger();
             services.SetupMinioClient(settingsProvider);
             services.SetupDataContext(settingsProvider);

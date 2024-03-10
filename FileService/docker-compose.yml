@@ -15,9 +15,11 @@ services:
       FILESERVICE_MINIO_ACCESS_KEY: your_username
       FILESERVICE_MINIO_SECRET_KEY: your_pasword
       FILESERVICE_CONNECTION_STRING: mongodb://mongodb:27017/app
+      OTEL_URL: http://otel:4317
     depends_on:
       - minio
       - mongodb
+      - otel
   
   minio:
     image: docker.io/bitnami/minio:2024.2.26
@@ -40,3 +42,30 @@ services:
         limits:
           cpus: "4.0"
           memory: 200M
+
+  otel:
+    # See https://opentelemetry.io/docs/collector/
+    image: otel/opentelemetry-collector-contrib:0.95.0
+    command: ["--config=/etc/otel-collector-config.yml"]
+    ports:
+      - 4317:4317  # gRPC receiver
+      - "8889"  # Prometheus exporter metrics
+      - "13133" # health_check extension
+    volumes:
+      - ./otel-collector-config.yml:/etc/otel-collector-config.yml:ro
+
+  prometheus:
+    # See https://prometheus.io/docs/prometheus/latest/installation/#using-docker
+    image: prom/prometheus:v2.49.1
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus-config.yml:/etc/prometheus/prometheus.yml:ro
+
+  jaeger:
+    # See https://www.jaegertracing.io/docs/1.38/deployment/#all-in-one
+    image: jaegertracing/all-in-one:1.54.0
+    ports:
+      - "14269"     # Admin port (health check and /metrics)
+      - 16686:16686 # Jaeger frontend
+      - "4317"      # Trace data receive port (otlp).

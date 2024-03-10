@@ -6,6 +6,9 @@ using Fileservice.WebApi.Settings;
 using Microsoft.OpenApi.Models;
 using Minio;
 using MongoDB.Driver;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 
 namespace Userservice.WebApi
 {
@@ -65,6 +68,35 @@ namespace Userservice.WebApi
         public static IServiceCollection SetupServices(this IServiceCollection services)
         {
             services.AddSingleton<INotebookFacade, NotebookFacade>();
+            return services;
+        }
+
+        public static IServiceCollection SetupOpenTelemetry(this IServiceCollection services, ISettingsProvider settingsProvider)
+        {
+            services.AddOpenTelemetry()
+                .WithTracing(builder =>
+                {
+                    builder
+                        .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("File Service"))
+                        .AddAspNetCoreInstrumentation()
+                        .AddHttpClientInstrumentation()
+                        .AddOtlpExporter(options =>
+                        {
+                            options.Endpoint = settingsProvider.OtelUrl;
+                        })
+                        .AddConsoleExporter();
+                })
+                .WithMetrics(builder =>
+                {
+                    builder
+                        .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("File Service"))
+                        .AddAspNetCoreInstrumentation()
+                        .AddOtlpExporter(options =>
+                        {
+                            options.Endpoint = settingsProvider.OtelUrl;
+                        })
+                        .AddConsoleExporter();
+                });
             return services;
         }
     }

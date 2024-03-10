@@ -14,6 +14,7 @@ namespace NotebookService.WebApi
         {
             ISettingsProvider settingsProvider = services
                 .SetupSettings();
+            services.SetupOpenTelemetry(settingsProvider);
             services.SetupSwagger();
             services.SetupDataContext(settingsProvider);
             services.SetupDatabase();

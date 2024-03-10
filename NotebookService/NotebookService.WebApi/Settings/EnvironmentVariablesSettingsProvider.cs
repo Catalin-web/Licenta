@@ -43,5 +43,13 @@ namespace NotebookService.WebApi.Settings
                 return new Uri(Environment.GetEnvironmentVariable("NOTEBOOKSERVICE_ARGO_BASE_URL") ?? "https://localhost:2746");
             }
         }
+
+        public Uri OtelUrl
+        {
+            get
+            {
+                return new Uri(Environment.GetEnvironmentVariable("OTEL_URL") ?? "https://localhost:4317");
+            }
+        }
     }
 }
