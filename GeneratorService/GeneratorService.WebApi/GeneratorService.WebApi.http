@@ -1,0 +1,6 @@
+@GeneratorService.WebApi_HostAddress = http://localhost:5211
+
+GET {{GeneratorService.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

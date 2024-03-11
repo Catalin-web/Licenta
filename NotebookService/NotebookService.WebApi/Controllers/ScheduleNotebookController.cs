@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using NotebookService.Models.Entities;
 using NotebookService.Models.Entities.ScheduleNotebook;
 using NotebookService.Models.Requests;
 using NotebookService.WebApi.Services.ScheduleNotebookFacade;

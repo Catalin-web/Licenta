@@ -1,0 +1,64 @@
+version: '3.4'
+
+services:
+  generatorservice.webapi:
+    image: ${DOCKER_REGISTRY-}generatorservicewebapi
+    build:
+      context: .
+      dockerfile: GeneratorService.WebApi/Dockerfile
+    ports:
+      - "12800:12800"
+    environment:
+      GENERATORSERVICE_BINDING_ADRESS: http://*
+      GENERATORSERVICE_BINDING_PORT: 12700
+      OLLAMA_URL: http://ollama:11434
+      OTEL_URL: http://otel:4317
+
+  ollama:
+    container_name: ollama
+    pull_policy: always
+    tty: true
+    restart: unless-stopped
+    image: ollama/ollama:0.1.9
+    ports:
+      - 11434:11434
+
+  ollama-webui:
+    image: ghcr.io/ollama-webui/ollama-webui:git-f4000f4
+    container_name: ollama-webui
+    depends_on:
+      - ollama
+    ports:
+      - 3000:8080
+    environment:
+      - '/ollama/api=http://ollama:11434/api'
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    restart: unless-stopped
+
+  otel:
+    # See https://opentelemetry.io/docs/collector/
+    image: otel/opentelemetry-collector-contrib:0.95.0
+    command: ["--config=/etc/otel-collector-config.yml"]
+    ports:
+      - 4317:4317  # gRPC receiver
+      - "8889"  # Prometheus exporter metrics
+      - "13133" # health_check extension
+    volumes:
+      - ./otel-collector-config.yml:/etc/otel-collector-config.yml:ro
+
+  prometheus:
+    # See https://prometheus.io/docs/prometheus/latest/installation/#using-docker
+    image: prom/prometheus:v2.49.1
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus-config.yml:/etc/prometheus/prometheus.yml:ro
+
+  jaeger:
+    # See https://www.jaegertracing.io/docs/1.38/deployment/#all-in-one
+    image: jaegertracing/all-in-one:1.54.0
+    ports:
+      - "14269"     # Admin port (health check and /metrics)
+      - 16686:16686 # Jaeger frontend
+      - "4317"      # Trace data receive port (otlp).

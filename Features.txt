@@ -31,3 +31,5 @@ d) Workflow history in druid
 5) Salt minion to connect current system to the web app, and execute code on your own machine (so it would be faster)
 
 6) Share workflow to friends (social network)
+
+7) Generator Service
