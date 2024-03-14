@@ -41,6 +41,8 @@ spec:
             from: "{{steps.first.outputs.artifacts.input_parameters_output_file_path}}"
           - name: output_parameters_file_path
             from: "{{steps.first.outputs.artifacts.output_parameters_names_output_file_path}}"
+          - name: input_parameters_to_generate_output
+            from: "{{steps.second.outputs.artifacts.input_parameters_to_generate_output_file_path}}"
     - - name: forth
         template: finish-notebook
         arguments:
@@ -51,7 +53,7 @@ spec:
             value: "{{workflow.parameters.scheduled_notebook_id}}"
           artifacts:
           - name: output_parameters_file_path
-            from: "{{steps.second.outputs.artifacts.output_parameters_output_file_path}}"
+            from: "{{steps.third.outputs.artifacts.output_parameters_output_file_path}}"
 
   - name: initialize-notebook
     inputs:
@@ -103,13 +105,13 @@ spec:
     container:
       # run cowsay with that message input parameter as args
       image: catalibugnar/generate_parameter
-      command: [python3, /app/init_notebook.py]
+      command: [python3, /app/generate_parameter.py]
       args:
       - --generator_service_url
       - "{{inputs.parameters.generator_service_url}}"
       - --input_parameters_to_generate_file_path
       - "/input_parameters_to_generate_output.json"
-      - --generated_output_parameters_file_path
+      - --input_parameters_to_generate_output_file_path
       - "/generated_output_parameters.json"
 
   - name: run-notebook

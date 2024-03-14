@@ -34,4 +34,4 @@ ARGO NAMESPACE:
 kubectl port-forward -n argo svc/argo-server 2746:2746
 
 argo template -n argo create .\argo\template.yaml
-argo submit -n argo --watch .\argo\submittable.yaml -p scheduled_notebook_id=65e62805012c68e7c67c6ade
+argo submit -n argo --watch .\argo\submittable.yaml -p scheduled_notebook_id=65f33c8b9e47eaa3a5a05fdb
