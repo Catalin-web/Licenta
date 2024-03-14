@@ -1,3 +1,4 @@
+import json
 import click
 
 from clients.NotebookServiceClient import NotebookServiceClient
@@ -28,12 +29,10 @@ def finish_notebook(
     notebook_service_client = NotebookServiceClient(notebook_service_url)
     output_parameters: list[NotebookParameter] = []
     with open(output_parameters_file_path, "r") as file:
-        for line in file.readlines():
-            splitted = line.strip().split("=")
-            if len(splitted) != 2:
-                continue
-            name, value = splitted
-            output_parameters.append(NotebookParameter(name, value))
+        dict = json.load(file)
+        output_parameters_dict = dict["output_parameters"]
+        for parameter in output_parameters_dict:
+            output_parameters.append(NotebookParameter.from_dict(parameter))
     finish_scheduled_notebook_request = FinishScheduledNotebookRequest(
         scheduled_notebook_id, Status.SUCCEDED, output_parameters
     )

@@ -25,6 +25,7 @@ namespace NotebookService.WebApi.Services.ScheduleNotebookFacade
                 Progress = Progress.CREATED,
                 Status = Status.NONE,
                 InputParameters = scheduleNotebookRequest.InputParameters,
+                InputParametersToGenerate = scheduleNotebookRequest.InputParameterstoGenerate,
                 OutputParametersNames = scheduleNotebookRequest.OutputParametersNames,
                 OutputParameters = new List<NotebookParameter>()
             };

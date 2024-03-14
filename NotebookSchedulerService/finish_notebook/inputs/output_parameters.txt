@@ -1,1 +1,0 @@
-random_variable=random_value

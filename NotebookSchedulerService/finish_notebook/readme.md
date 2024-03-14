@@ -5,4 +5,4 @@ Run image:
 docker run catalibugnar/finish_notebook
 
 Local usage:
-./finish_notebook.py --notebook_service_url http://localhost:12700 --scheduled_notebook_id 65e35f610c03b39e958f8c6f --output_parameters_file_path ./inputs/output_parameters.txt
+./finish_notebook.py --notebook_service_url http://localhost:12700 --scheduled_notebook_id 65f07de2923c4626bdfaafb1 --output_parameters_file_path ./inputs/output_parameters.json

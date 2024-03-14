@@ -1,3 +1,6 @@
-module "deployments"{
-    source = "./deployments"
+module "deployments" {
+  source = "./deployments"
+}
+module "observability" {
+  source = "./observability"
 }

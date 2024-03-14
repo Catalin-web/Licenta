@@ -15,6 +15,7 @@ services:
       FILESERVICE_MINIO_ACCESS_KEY: your_username
       FILESERVICE_MINIO_SECRET_KEY: your_pasword
       FILESERVICE_CONNECTION_STRING: mongodb://mongodb:27017/app
+      OTEL_URL: http://otel:4317
     depends_on:
       - minio
       - mongodb
@@ -30,8 +31,46 @@ services:
       NOTEBOOKSERVICE_BINDING_ADRESS: http://*
       NOTEBOOKSERVICE_BINDING_PORT: 12700
       NOTEBOOKSERVICE_CONNECTION_STRING: mongodb://mongodb:27017/app
+      OTEL_URL: http://otel:4317
     depends_on:
       - mongodb
+  
+  generatorservice:
+    image: catalibugnar/generatorservice
+    build:
+      context: ./GeneratorService
+      dockerfile: GeneratorService.WebApi/Dockerfile
+    ports:
+      - "12800:12800"
+    environment:
+      GENERATORSERVICE_BINDING_ADRESS: http://*
+      GENERATORSERVICE_BINDING_PORT: 12800
+      OLLAMA_URL: http://ollama:11434
+      OTEL_URL: http://otel:4317
+    depends_on:
+      - mongodb
+
+  ollama:
+    container_name: ollama
+    pull_policy: always
+    tty: true
+    restart: unless-stopped
+    image: ollama/ollama:0.1.29
+    ports:
+      - 11434:11434
+
+  ollama-webui:
+    image: ghcr.io/ollama-webui/ollama-webui:git-f4000f4
+    container_name: ollama-webui
+    depends_on:
+      - ollama
+    ports:
+      - 3000:8080
+    environment:
+      - '/ollama/api=http://ollama:11434/api'
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    restart: unless-stopped
 
   minio:
     image: docker.io/bitnami/minio:2024.2.26
@@ -54,3 +93,30 @@ services:
         limits:
           cpus: "4.0"
           memory: 200M
+
+  otel:
+    # See https://opentelemetry.io/docs/collector/
+    image: otel/opentelemetry-collector-contrib:0.95.0
+    command: ["--config=/etc/otel-collector-config.yml"]
+    ports:
+      - 4317:4317  # gRPC receiver
+      - "8889"  # Prometheus exporter metrics
+      - "13133" # health_check extension
+    volumes:
+      - ./otel-collector-config.yml:/etc/otel-collector-config.yml:ro
+
+  prometheus:
+    # See https://prometheus.io/docs/prometheus/latest/installation/#using-docker
+    image: prom/prometheus:v2.49.1
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus-config.yml:/etc/prometheus/prometheus.yml:ro
+
+  jaeger:
+    # See https://www.jaegertracing.io/docs/1.38/deployment/#all-in-one
+    image: jaegertracing/all-in-one:1.54.0
+    ports:
+      - "14269"     # Admin port (health check and /metrics)
+      - 16686:16686 # Jaeger frontend
+      - "4317"      # Trace data receive port (otlp).

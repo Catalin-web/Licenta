@@ -37,7 +37,18 @@ namespace GeneratorService.WebApi.Services.GenerateParameters
 
         public async Task<ParameterGeneratorResponse> GenerateParameterAsync(ParameterGeneratorRequest request)
         {
-            return null;
+            var ollamaGenerateRequest = new OllamaGenerateRequest()
+            {
+                Model = "phi:latest",
+                System = GeneratingParametersPrompts.SystemPromptToGenerateParameters,
+                Prompt = GeneratingParametersPrompts.UserPromptToGenerateParameters.Replace("NAME", request.NameOfTheParameter).Replace("DESCRIPTION", request.DescriptionOfTheParameter),
+                Stream = false
+            };
+            var ollamaGenerateResponse = await _ollamaClient.GenerateResponse(ollamaGenerateRequest);
+            return new ParameterGeneratorResponse()
+            {
+                Value = ollamaGenerateResponse.Response
+            };
         }
 
         public async Task<OllamaGenerateResponse> GenerateResponse(OllamaGenerateRequest request)

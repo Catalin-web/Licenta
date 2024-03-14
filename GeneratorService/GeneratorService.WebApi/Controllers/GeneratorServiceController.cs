@@ -82,7 +82,7 @@ namespace GeneratorService.WebApi.Controllers
         [HttpPost]
         [Route("generate")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<ParameterGeneratorResponse>> ScheduleNotebook(ParameterGeneratorRequest parameterGeneratorRequest)
+        public async Task<ActionResult<ParameterGeneratorResponse>> GenerateParameterAsync(ParameterGeneratorRequest parameterGeneratorRequest)
         {
             try
             {

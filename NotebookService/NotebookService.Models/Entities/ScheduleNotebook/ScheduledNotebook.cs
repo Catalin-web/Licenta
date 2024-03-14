@@ -15,6 +15,7 @@ namespace NotebookService.Models.Entities.ScheduleNotebook
         public Progress Progress { get; set; }
         public Status Status { get; set; }
         public IEnumerable<NotebookParameter> InputParameters { get; set; }
+        public IEnumerable<NotebookParameterToGenerate> InputParametersToGenerate { get; set; }
         public IEnumerable<NotebookParameter> OutputParameters { get; set; }
         public IEnumerable<string> OutputParametersNames { get; set; }
     }

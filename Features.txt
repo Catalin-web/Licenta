@@ -15,10 +15,10 @@ c) Edd endpoints to expose the history (get all) X
 3) Workflow pentru generarea parametriilor
 
 TODOS:
-a) Create a docker image to generate text based on a prompt. The docker image should preinstall the image for quick load.
-b) NotebookService: Add parameter types
+a) Create a docker image to generate text based on a prompt. The docker image should preinstall the image for quick load. X
+b) NotebookService: Add parameter types X
 c) Add a new step in the workflow: Generate parameter, and pass them to the next
-d) Images inputs
+d) Images inputs OOO
 
 4) Notebooks triggering other notebooks
 
@@ -32,4 +32,4 @@ d) Workflow history in druid
 
 6) Share workflow to friends (social network)
 
-7) Generator Service
+7) Generator Service X

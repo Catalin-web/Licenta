@@ -1,71 +1,75 @@
 resource "kubernetes_deployment" "fileservice" {
-    metadata {
-        name = "fileservice"
+  metadata {
+    name = "fileservice"
+  }
+  spec {
+    replicas = 1
+    selector {
+      match_labels = {
+        app = "fileservice"
+      }
     }
-    spec {
-        replicas = 1
-        selector {
-            match_labels = {
-                app = "fileservice"
-            }
+    template {
+      metadata {
+        labels = {
+          app = "fileservice"
         }
-        template {
-            metadata {
-                labels = {
-                    app = "fileservice"
-                }
-            }
-            spec {
-                container {
-                    name = "fileservice"
-                    image = "catalibugnar/fileservice:latest@sha256:64756153ce3574ebbe0128263afa4b6068e21e0a0698a4595a6314521d1312be"
-                    port {
-                        container_port = 12600
-                    }
-                    env {
-                        name = "FILESERVICE_BINDING_ADRESS"
-                        value = "http://*"
-                    }
-                    env {
-                        name = "FILESERVICE_PORT"
-                        value = "12600"
-                    }
-                    env {
-                        name = "FILESERVICE_MINIO_ENDPOINT"
-                        value = "minio.default.svc.cluster.local:9000"
-                    }
-                    env {
-                        name = "FILESERVICE_MINIO_ACCESS_KEY"
-                        value = "your_username"
-                    }
-                    env {
-                        name = "FILESERVICE_MINIO_SECRET_KEY"
-                        value = "your_password"
-                    }
-                    env {
-                        name = "FILESERVICE_CONNECTION_STRING"
-                        value = "mongodb://mongodb.default.svc.cluster.local:27017/app"
-                    }
-                }
-            }
+      }
+      spec {
+        container {
+          name  = "fileservice"
+          image = "catalibugnar/fileservice:latest@sha256:70c6586dfdd5980d013f0e6ac08bb3af43c1491fba2397d52cbe56486bb04d45"
+          port {
+            container_port = 12600
+          }
+          env {
+            name  = "FILESERVICE_BINDING_ADRESS"
+            value = "http://*"
+          }
+          env {
+            name  = "FILESERVICE_PORT"
+            value = "12600"
+          }
+          env {
+            name  = "FILESERVICE_MINIO_ENDPOINT"
+            value = "minio.default.svc.cluster.local:9000"
+          }
+          env {
+            name  = "FILESERVICE_MINIO_ACCESS_KEY"
+            value = "your_username"
+          }
+          env {
+            name  = "FILESERVICE_MINIO_SECRET_KEY"
+            value = "your_password"
+          }
+          env {
+            name  = "FILESERVICE_CONNECTION_STRING"
+            value = "mongodb://mongodb.default.svc.cluster.local:27017/app"
+          }
+          env {
+            name  = "OTEL_URL"
+            value = "http://jaeger-all-in-one.default.svc.cluster.local:4317"
+          }
         }
+      }
     }
+  }
 }
 // Load balancer:
 resource "kubernetes_service" "fileservice_service" {
-    metadata {
-        name = "fileservice"
+  metadata {
+    name = "fileservice"
+  }
+  spec {
+    selector = {
+      app = "fileservice"
     }
-    spec {
-        selector = {
-            app = "fileservice"
-        }
-        port {
-            port = 12600
-            target_port = 12600
-        }
-        type = "ClusterIP"
+    port {
+      port        = 12600
+      target_port = 12600
     }
+    type = "ClusterIP"
+  }
 }
 
 

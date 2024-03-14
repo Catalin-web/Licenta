@@ -1,1 +1,1 @@
-random_variable=random_value
+string=string

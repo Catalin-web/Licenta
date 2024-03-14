@@ -21,8 +21,8 @@ namespace GeneratorService.WebApi.Clients
                 var httpContent = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
                 HttpResponseMessage response = await _httpClient.PostAsync(_httpClient.BaseAddress + route, httpContent);
                 response.EnsureSuccessStatusCode();
-                var stream = await response.Content.ReadAsStreamAsync();
-                return await JsonSerializer.DeserializeAsync<TResponse>(stream, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<TResponse>(jsonResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             }
             catch (HttpRequestException e)
             {

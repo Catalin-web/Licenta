@@ -1,3 +1,4 @@
 random_variable
 another_random_variable
 random_input_parameter
+string

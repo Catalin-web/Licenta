@@ -24,6 +24,29 @@ namespace NotebookService.Tests.Integration
         }
 
         [Fact]
+        public async Task ScheduleNotebookWithNameAndGenerateParameter_ReturnsAValidScheduledNotebook()
+        {
+            var notebookName = $"Test-{Guid.NewGuid()}";
+            var notebookParameterToGenerate = new NotebookParameterToGenerate()
+            {
+                NameOfTheParameter = "Parameter",
+                DescriptionOfTheParameter = "Description",
+            };
+
+            var scheduledNotebook = await CreateNotebookWithName(notebookName, notebookParameterToGenerate);
+
+            Assert.NotNull(scheduledNotebook);
+            Assert.Equal(notebookName, scheduledNotebook.NotebookName);
+            Assert.Empty(scheduledNotebook.InputParameters);
+            Assert.Empty(scheduledNotebook.OutputParametersNames);
+            Assert.Empty(scheduledNotebook.OutputParameters);
+            Assert.False(string.IsNullOrEmpty(scheduledNotebook.Id));
+            Assert.Single(scheduledNotebook.InputParametersToGenerate);
+            Assert.Equal("Parameter", scheduledNotebook.InputParametersToGenerate.Single().NameOfTheParameter);
+            Assert.Equal("Description", scheduledNotebook.InputParametersToGenerate.Single().DescriptionOfTheParameter);
+        }
+
+        [Fact]
         public async Task HavingAScheduledNotebookWithName_GetScheduledNotebookReturnsPreviouslyCreateScheduledNotebook()
         {
             var notebookName = $"Test-{Guid.NewGuid()}";
@@ -97,6 +120,20 @@ namespace NotebookService.Tests.Integration
             {
                 NotebookName = notebookName,
                 InputParameters = new List<NotebookParameter> { },
+                InputParameterstoGenerate = new List<NotebookParameterToGenerate> { },
+                OutputParametersNames = new List<string> { }
+            };
+
+            return await _scheduledNotebookClient.ScheduleNotebookAsync(request);
+        }
+
+        private async Task<ScheduledNotebook> CreateNotebookWithName(string notebookName, NotebookParameterToGenerate notebookParameterToGenerate)
+        {
+            ScheduleNotebookRequest request = new ScheduleNotebookRequest()
+            {
+                NotebookName = notebookName,
+                InputParameters = new List<NotebookParameter> { },
+                InputParameterstoGenerate = new List<NotebookParameterToGenerate> { notebookParameterToGenerate },
                 OutputParametersNames = new List<string> { }
             };
 

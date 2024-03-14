@@ -10,7 +10,7 @@ services:
       - "12800:12800"
     environment:
       GENERATORSERVICE_BINDING_ADRESS: http://*
-      GENERATORSERVICE_BINDING_PORT: 12700
+      GENERATORSERVICE_PORT: 12800
       OLLAMA_URL: http://ollama:11434
       OTEL_URL: http://otel:4317
 
@@ -19,7 +19,7 @@ services:
     pull_policy: always
     tty: true
     restart: unless-stopped
-    image: ollama/ollama:0.1.9
+    image: ollama/ollama:0.1.29
     ports:
       - 11434:11434
 

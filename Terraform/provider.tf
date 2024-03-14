@@ -1,16 +1,23 @@
 terraform {
   required_version = "~> 1.7"
   required_providers {
-    mycloud = {
-      source = "hashicorp/kubernetes"
-      version = "~> 1.13"
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "2.27.0"
     }
-  }
-  backend "local" {
-    path = "/tmp/terraform.tfstate"
+    docker = {
+      source  = "kreuzwerker/docker"
+      version = "3.0.2"
+    }
   }
 }
 
 provider "kubernetes" {
-  host = "https://192.168.144.109:8443"
+  config_path = "~/.kube/config"
+}
+
+provider "helm" {
+  kubernetes {
+    config_path = "~/.kube/config"
+  }
 }

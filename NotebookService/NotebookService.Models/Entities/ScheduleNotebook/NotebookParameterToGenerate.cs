@@ -2,7 +2,8 @@
 {
     public class NotebookParameterToGenerate
     {
-        public string ParameterName { get; set; }
-        public string Prompt { get; set; }
+        public string NameOfTheParameter { get; set; }
+        public string DescriptionOfTheParameter { get; set; }
+        public ModelType ModelType { get; set; }
     }
 }

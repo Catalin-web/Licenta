@@ -6,6 +6,7 @@ namespace NotebookService.Models.Requests
     {
         public string NotebookName { get; set; }
         public IEnumerable<NotebookParameter> InputParameters { get; set; }
+        public IEnumerable<NotebookParameterToGenerate> InputParameterstoGenerate { get; set; }
         public IEnumerable<string> OutputParametersNames { get; set; }
     }
 }

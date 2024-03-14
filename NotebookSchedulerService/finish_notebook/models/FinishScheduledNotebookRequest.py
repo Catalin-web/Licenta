@@ -1,11 +1,16 @@
 from enum import Enum
 import dataclasses
+import json
 
 
 @dataclasses.dataclass(frozen=True)
 class NotebookParameter:
     name: str
     value: str
+
+    @staticmethod
+    def from_dict(dict):
+        return NotebookParameter(dict["name"], str(dict["value"]))
 
     def to_dict(self):
         return {

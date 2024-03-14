@@ -23,6 +23,15 @@ spec:
           - name: scheduled_notebook_id
             value: "{{workflow.parameters.scheduled_notebook_id}}"
     - - name: second
+        template: generate-parameter
+        arguments:
+          parameters:
+          - name: generator_service_url
+            value: http://generatorservice.default.svc.cluster.local:12800
+          artifacts:
+          - name: input_parameters_to_generate_file_path
+            from: "{{steps.first.outputs.artifacts.input_parameters_to_generate_output_file_path}}"
+    - - name: third
         template: run-notebook
         arguments:
           artifacts:
@@ -32,7 +41,7 @@ spec:
             from: "{{steps.first.outputs.artifacts.input_parameters_output_file_path}}"
           - name: output_parameters_file_path
             from: "{{steps.first.outputs.artifacts.output_parameters_names_output_file_path}}"
-    - - name: third
+    - - name: forth
         template: finish-notebook
         arguments:
           parameters:
@@ -56,6 +65,8 @@ spec:
         path: /notebook_output.txt
       - name: input_parameters_output_file_path
         path: /input_parameters_output.txt
+      - name: input_parameters_to_generate_output_file_path
+        path: /input_parameters_to_generate_output.json
       - name: output_parameters_names_output_file_path
         path: /output_parameters_names.txt
     container:
@@ -73,8 +84,33 @@ spec:
       - "/notebook_output.txt"
       - --input_parameters_output_file_path
       - "/input_parameters_output.txt"
+      - --input_parameters_to_generate_output_file_path
+      - "/input_parameters_to_generate_output.json"
       - --output_parameters_names_output_file_path
       - "/output_parameters_names.txt"
+
+  - name: generate-parameter
+    inputs:
+      parameters:
+      - name: generator_service_url
+      artifacts:
+        - name: input_parameters_to_generate_file_path
+          path: /input_parameters_to_generate_output.json
+    outputs:
+      artifacts:
+      - name: input_parameters_to_generate_output_file_path
+        path: /generated_output_parameters.json
+    container:
+      # run cowsay with that message input parameter as args
+      image: catalibugnar/generate_parameter
+      command: [python3, /app/init_notebook.py]
+      args:
+      - --generator_service_url
+      - "{{inputs.parameters.generator_service_url}}"
+      - --input_parameters_to_generate_file_path
+      - "/input_parameters_to_generate_output.json"
+      - --generated_output_parameters_file_path
+      - "/generated_output_parameters.json"
 
   - name: run-notebook
     inputs:
@@ -83,6 +119,8 @@ spec:
           path: /notebook_output.txt
         - name: input_parameters_file_path
           path: /input_parameters_output.txt
+        - name: input_parameters_to_generate_output
+          path: /generated_output_parameters.json
         - name: output_parameters_file_path
           path: /output_parameters_names.txt
     outputs:
@@ -98,6 +136,8 @@ spec:
       - "/notebook_output.txt"
       - --input_parameters_file_path
       - "/input_parameters_output.txt"
+      - --input_parameters_to_generate_output
+      - "/generated_output_parameters.json"
       - --output_parameters_file_path
       - "/output_parameters_names.txt"
       - --output_parameters_output_file_path

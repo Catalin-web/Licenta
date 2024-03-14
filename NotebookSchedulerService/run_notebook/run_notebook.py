@@ -1,3 +1,4 @@
+import json
 import click
 from json import load
 
@@ -37,9 +38,11 @@ def get_all_output_parameters(
 def write_output_parameters_to_file(
     output_parameters: list[NotebookParameter], output_parameters_output_file_path: str
 ):
+    parameters_list = []
     with open(output_parameters_output_file_path, "w") as f:
         for output_parameter in output_parameters:
-            f.write(f"{output_parameter.name}={output_parameter.value}\n")
+            parameters_list.append(output_parameter.to_dict())
+        json.dump({"output_parameters": parameters_list}, f)
 
 
 def get_input_parameter_in_locals(input_parameters_file_path: str, locals: dict):
@@ -49,21 +52,34 @@ def get_input_parameter_in_locals(input_parameters_file_path: str, locals: dict)
             locals[name] = value
 
 
+def get_input_generated_parameter_in_locals(
+    input_parameters_to_generate_output: str, locals: dict
+):
+    with open(input_parameters_to_generate_output, "r") as f:
+        dict = json.load(f)
+        for generated_parameter in dict["parameters"]:
+            name, value = generated_parameter["name"], generated_parameter["value"]
+            locals[name] = value
+
+
 @click.command
 # Input parameters
 @click.option("--notebook_input_path", type=click.STRING)
 @click.option("--input_parameters_file_path", type=click.STRING)
+@click.option("--input_parameters_to_generate_output", type=click.STRING)
 @click.option("--output_parameters_file_path", type=click.STRING)
 # Output parameters
 @click.option("--output_parameters_output_file_path", type=click.STRING)
 def run_notebook(
     notebook_input_path: str,
     input_parameters_file_path: str,
+    input_parameters_to_generate_output: str,
     output_parameters_file_path: str,
     output_parameters_output_file_path: str,
 ):
     globals, locals = {}, {}
     get_input_parameter_in_locals(input_parameters_file_path, locals)
+    get_input_generated_parameter_in_locals(input_parameters_to_generate_output, locals)
     execute_notebook_with_globals_and_locals(notebook_input_path, globals, locals)
     output_parameters = get_all_output_parameters(output_parameters_file_path, locals)
     write_output_parameters_to_file(
