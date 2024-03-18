@@ -27,7 +27,8 @@ namespace NotebookService.WebApi.Services.ScheduleNotebookFacade
                 InputParameters = scheduleNotebookRequest.InputParameters,
                 InputParametersToGenerate = scheduleNotebookRequest.InputParameterstoGenerate,
                 OutputParametersNames = scheduleNotebookRequest.OutputParametersNames,
-                OutputParameters = new List<NotebookParameter>()
+                OutputParameters = new List<NotebookParameter>(),
+                NotebookGraphId = null
             };
             await _scheduleNotebookProvider.InsertAsync(scheduledNotebook);
             return scheduledNotebook;

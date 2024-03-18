@@ -1,10 +1,12 @@
 ﻿using Microsoft.OpenApi.Models;
 using NotebookService.DataStore.Mongo;
+using NotebookService.DataStore.Mongo.NotebookGraphProvider;
 using NotebookService.DataStore.Mongo.ScheduleNotebookHistoryProvider;
 using NotebookService.DataStore.Mongo.ScheduleNotebookProvider;
 using NotebookService.WebApi.Clients.Argo;
 using NotebookService.WebApi.Clients.ArgoWorkflowClient;
 using NotebookService.WebApi.Services;
+using NotebookService.WebApi.Services.NotebookGraphFacade;
 using NotebookService.WebApi.Services.ScheduleNotebookFacade;
 using NotebookService.WebApi.Settings;
 using OpenTelemetry.Exporter;
@@ -47,6 +49,7 @@ namespace NotebookService.WebApi
         {
             services.AddSingleton<IScheduleNotebookProvider, ScheduleNotebookProvider>();
             services.AddSingleton<IScheduleNotebookHistoryProvider, ScheduleNotebookHistoryProvider>();
+            services.AddSingleton<INotebookGraphProvider, NotebookGraphProvider>();
             return services;
         }
 
@@ -69,6 +72,7 @@ namespace NotebookService.WebApi
                      ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; }
                  }
             );
+            services.AddSingleton<INotebookGraphFacade, NotebookGraphFacade>();
             return services;
         }
 

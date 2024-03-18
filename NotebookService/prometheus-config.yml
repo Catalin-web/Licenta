@@ -1,0 +1,5 @@
+scrape_configs:
+  - job_name: otel
+    static_configs:
+      - targets: [otel:8889]
+    scrape_interval: 1s # Lowered from default 1m for easier testing.

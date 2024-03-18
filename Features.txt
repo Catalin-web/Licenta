@@ -12,12 +12,12 @@ a) Delete notebook on finish X
 b) Add history to a druid DB X
 c) Edd endpoints to expose the history (get all) X
 
-3) Workflow pentru generarea parametriilor
+3) Workflow pentru generarea parametriilor X
 
 TODOS:
 a) Create a docker image to generate text based on a prompt. The docker image should preinstall the image for quick load. X
 b) NotebookService: Add parameter types X
-c) Add a new step in the workflow: Generate parameter, and pass them to the next
+c) Add a new step in the workflow: Generate parameter, and pass them to the next X
 d) Images inputs OOO
 
 4) Notebooks triggering other notebooks
