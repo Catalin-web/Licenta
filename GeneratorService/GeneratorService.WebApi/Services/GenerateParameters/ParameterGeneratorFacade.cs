@@ -2,6 +2,7 @@
 using GeneratorService.Models.Requests;
 using GeneratorService.Models.Responses;
 using GeneratorService.WebApi.Clients.Ollama;
+using GeneratorService.WebApi.Settings;
 using System.Text.Json;
 
 namespace GeneratorService.WebApi.Services.GenerateParameters
@@ -9,9 +10,12 @@ namespace GeneratorService.WebApi.Services.GenerateParameters
     public class ParameterGeneratorFacade : IParameterGeneratorFacade
     {
         private readonly IOllamaClient _ollamaClient;
-        public ParameterGeneratorFacade(IOllamaClient ollamaClient)
+        private readonly string _defaultOpenSourceModelToGenerateParameters;
+
+        public ParameterGeneratorFacade(IOllamaClient ollamaClient, ISettingsProvider settingsProvider)
         {
             _ollamaClient = ollamaClient;
+            _defaultOpenSourceModelToGenerateParameters = settingsProvider.DefaultOpenSourceModelToGenerateParameters;
         }
 
         public async Task<OllamaPullModelResponse> PullModelAsync(OllamaPullModelRequest request)
@@ -39,7 +43,7 @@ namespace GeneratorService.WebApi.Services.GenerateParameters
         {
             var ollamaGenerateRequest = new OllamaGenerateRequest()
             {
-                Model = "phi:latest",
+                Model = $"{_defaultOpenSourceModelToGenerateParameters}:latest",
                 System = GeneratingParametersPrompts.SystemPromptToGenerateParameters,
                 Prompt = GeneratingParametersPrompts.UserPromptToGenerateParameters.Replace("NAME", request.NameOfTheParameter).Replace("DESCRIPTION", request.DescriptionOfTheParameter),
                 Stream = false

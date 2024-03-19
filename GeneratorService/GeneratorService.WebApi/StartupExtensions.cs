@@ -1,8 +1,11 @@
-﻿using GeneratorService.WebApi.Clients.Ollama;
+﻿using GeneratorService.DataStore.Mongo;
+using GeneratorService.DataStore.Mongo.NotebookGraphProvider;
+using GeneratorService.DataStore.Mongo.PullJobProvider;
+using GeneratorService.WebApi.Clients.Ollama;
 using GeneratorService.WebApi.Services.GenerateParameters;
+using GeneratorService.WebApi.Services.Jobs;
 using GeneratorService.WebApi.Settings;
 using Microsoft.OpenApi.Models;
-using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
@@ -40,14 +43,14 @@ namespace GeneratorService.WebApi
 
         public static IServiceCollection SetupDatabase(this IServiceCollection services)
         {
-            // services.AddSingleton<IScheduleNotebookProvider, ScheduleNotebookProvider>();
+            services.AddSingleton<IPullJobProvider, PullJobProvider>();
             return services;
         }
 
         public static IServiceCollection SetupDataContext(this IServiceCollection services, ISettingsProvider settingsProvider)
         {
-            // var mongoDataContext = new MongoDataContext(settingsProvider.ConnectionString);
-            // services.AddSingleton<IMongoDataContext>(mongoDataContext);
+            var mongoDataContext = new MongoDataContext(settingsProvider.ConnectionString);
+            services.AddSingleton<IMongoDataContext>(mongoDataContext);
             return services;
         }
 
@@ -64,6 +67,13 @@ namespace GeneratorService.WebApi
                      ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; }
                  }
             );
+            services.AddSingleton<IPullJobFacade, PullJobFacade>();
+            return services;
+        }
+
+        public static IServiceCollection SetupBackgroundServices(this IServiceCollection services)
+        {
+            services.AddHostedService<PullJobBackgroundService>();
             return services;
         }
 

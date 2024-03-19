@@ -20,16 +20,20 @@ b) NotebookService: Add parameter types X
 c) Add a new step in the workflow: Generate parameter, and pass them to the next X
 d) Images inputs OOO
 
-4) Notebooks triggering other notebooks
+4) Notebooks triggering other notebooks X
 
 TODOS:
-a) Create a workflow for expanding notebooks
-b) Save the graph between workflow somehow to a db
-c) On the finish step trigger other execution
-d) Workflow history in druid
+a) Create a workflow for expanding notebooks X
+b) Save the graph between workflow somehow to a db X
+c) On the finish step trigger other execution X
+d) Workflow history in druid ??
 
 5) Salt minion to connect current system to the web app, and execute code on your own machine (so it would be faster)
 
 6) Share workflow to friends (social network)
 
 7) Generator Service X
+
+8) Connect Auth Service
+
+9) Pull job instead of request 

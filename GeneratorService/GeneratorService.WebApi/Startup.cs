@@ -19,6 +19,7 @@ namespace GeneratorService.WebApi
             services.SetupDataContext(settingsProvider);
             services.SetupDatabase();
             services.SetupServices(settingsProvider);
+            services.SetupBackgroundServices();
             services.AddCors();
 
             services.AddControllers(options =>

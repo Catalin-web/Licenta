@@ -11,8 +11,25 @@ services:
     environment:
       GENERATORSERVICE_BINDING_ADRESS: http://*
       GENERATORSERVICE_PORT: 12800
+      GENERATORSERVICE_CONNECTION_STRING: mongodb://mongodb:27017/app
       OLLAMA_URL: http://ollama:11434
       OTEL_URL: http://otel:4317
+    depends_on:
+      - mongodb
+      - otel
+
+  mongodb:
+    image: bitnami/mongodb:6.0.2
+    container_name: mongodb
+    environment:
+      MONGO_INITDB_DATABASE: app
+    ports:
+      - "27017:27017"
+    deploy:
+      resources:
+        limits:
+          cpus: "4.0"
+          memory: 200M
 
   ollama:
     container_name: ollama
