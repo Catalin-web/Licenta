@@ -36,4 +36,7 @@ d) Workflow history in druid ??
 
 8) Connect Auth Service
 
-9) Pull job instead of request 
+9) Pull job instead of request X
+
+TODOS:
+a) Make a job when pulling request, instead of making it synchronous X
