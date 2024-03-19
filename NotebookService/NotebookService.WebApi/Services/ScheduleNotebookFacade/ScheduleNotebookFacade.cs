@@ -1,5 +1,7 @@
-﻿using NotebookService.DataStore.Mongo.ScheduleNotebookHistoryProvider;
+﻿using NotebookService.DataStore.Mongo.NotebookGraphProvider;
+using NotebookService.DataStore.Mongo.ScheduleNotebookHistoryProvider;
 using NotebookService.DataStore.Mongo.ScheduleNotebookProvider;
+using NotebookService.Models.Entities.NotebookGraph;
 using NotebookService.Models.Entities.ScheduleNotebook;
 using NotebookService.Models.Requests;
 
@@ -28,7 +30,7 @@ namespace NotebookService.WebApi.Services.ScheduleNotebookFacade
                 InputParametersToGenerate = scheduleNotebookRequest.InputParameterstoGenerate,
                 OutputParametersNames = scheduleNotebookRequest.OutputParametersNames,
                 OutputParameters = new List<NotebookParameter>(),
-                NotebookGraphId = null
+                ChildNodes = Enumerable.Empty<NotebookNode>()
             };
             await _scheduleNotebookProvider.InsertAsync(scheduledNotebook);
             return scheduledNotebook;
@@ -49,6 +51,25 @@ namespace NotebookService.WebApi.Services.ScheduleNotebookFacade
             await _scheduleNotebookProvider.UpdateAsync(scheduledNotebook => scheduledNotebook.Id == finishScheduledNotebookRequest.ScheduledNotebookId, scheduledNotebook);
             await _scheduleNotebookProvider.DeleteAsync(scheduledNotebook => scheduledNotebook.Id == finishScheduledNotebookRequest.ScheduledNotebookId);
             await _scheduleNotebookHistoryProvider.InsertAsync(scheduledNotebook);
+            foreach (var notebookNode in scheduledNotebook.ChildNodes)
+            {
+                var inputParameters = notebookNode.InputParameters.ToList();
+                inputParameters.AddRange(scheduledNotebook.OutputParameters);
+                var newScheduledNotebook = new ScheduledNotebook()
+                {
+                    NotebookName = notebookNode.NotebookName,
+                    CreatedAt = DateTime.UtcNow,
+                    FinishedAt = null,
+                    Progress = Progress.CREATED,
+                    Status = Status.NONE,
+                    InputParameters = inputParameters,
+                    InputParametersToGenerate = notebookNode.InputParameterstoGenerate,
+                    OutputParametersNames = notebookNode.OutputParametersNames,
+                    OutputParameters = new List<NotebookParameter>(),
+                    ChildNodes = notebookNode.ChildNodes
+                };
+                await _scheduleNotebookProvider.InsertAsync(newScheduledNotebook);
+            }
             return scheduledNotebook;
         }
 

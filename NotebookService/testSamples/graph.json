@@ -1,0 +1,70 @@
+{
+	"rootNode": {
+		"notebookName": "catalinNotebook",
+		"inputParameters": [
+			{
+				"name": "parameter_parent",
+				"value": "value_parent"
+			}
+		],
+		"inputParameterstoGenerate": [
+			{
+				"nameOfTheParameter": "instagram_description_parent",
+				"descriptionOfTheParameter": "Instagram description for a post",
+				"modelType": 0
+			}
+		],
+		"outputParametersNames": [
+			"parameter_parent",
+			"instagram_description_parent"
+		],
+		"childNodes": [
+			{
+				"notebookName": "catalinNotebook",
+				"inputParameters": [
+					{
+						"name": "parameter_child_1",
+						"value": "value_child_1"
+					}
+				],
+				"inputParameterstoGenerate": [
+					{
+						"nameOfTheParameter": "instagram_description_child_1",
+						"descriptionOfTheParameter": "Instagram description for a post",
+						"modelType": 0
+					}
+				],
+				"outputParametersNames": [
+					"parameter_parent",
+					"instagram_description_parent",
+					"parameter_child_1",
+					"instagram_description_child_1"
+				],
+				"childNodes": []
+			},
+			{
+				"notebookName": "catalinNotebook",
+				"inputParameters": [
+					{
+						"name": "parameter_child_2",
+						"value": "value_child_2"
+					}
+				],
+				"inputParameterstoGenerate": [
+					{
+						"nameOfTheParameter": "instagram_description_child_2",
+						"descriptionOfTheParameter": "Instagram description for a post",
+						"modelType": 0
+					}
+				],
+				"outputParametersNames": [
+					"parameter_parent",
+					"instagram_description_parent",
+					"parameter_child_2",
+					"instagram_description_child_2"
+				],
+				"childNodes": []
+			}
+		]
+	}
+}

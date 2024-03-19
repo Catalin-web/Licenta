@@ -8,5 +8,6 @@ namespace NotebookService.Models.Entities.NotebookGraph
         public IEnumerable<NotebookParameter> InputParameters { get; set; }
         public IEnumerable<NotebookParameterToGenerate> InputParameterstoGenerate { get; set; }
         public IEnumerable<string> OutputParametersNames { get; set; }
+        public IEnumerable<NotebookNode> ChildNodes { get; set; }
     }
 }

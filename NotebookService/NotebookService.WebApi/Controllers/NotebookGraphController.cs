@@ -59,7 +59,7 @@ namespace NotebookService.WebApi.Controllers
         /// Schedule a notebook graph.
         /// </summary>
         /// <response code="200">Schedule a notebook graph.</response>
-        [HttpGet]
+        [HttpPost]
         [Route("schedule")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<ScheduledNotebook>> ScheduleNotebookGraphAsync(ScheduleNotebookGraphRequest request)
@@ -67,25 +67,6 @@ namespace NotebookService.WebApi.Controllers
             try
             {
                 return Ok(await _notebookGraphFacade.ScheduleNotebookGraph(request));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// Schedule next notebooks of a notebook graph.
-        /// </summary>
-        /// <response code="200">Schedule next notebooks of a notebook graph.</response>
-        [HttpGet]
-        [Route("schedule/next")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<ScheduledNotebook>>> ScheduleNextNotebooksFromGraphAsync(ScheduleNextNotebooksRequest request)
-        {
-            try
-            {
-                return Ok(await _notebookGraphFacade.ScheduleNextNotebooks(request));
             }
             catch (Exception ex)
             {

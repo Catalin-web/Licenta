@@ -9,7 +9,6 @@ namespace NotebookService.Models.Entities.NotebookGraph
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
-        public NotebookNode StartingNode { get; set; }
-        public IDictionary<string, IEnumerable<NotebookNode>> Nodes { get; set; }
+        public NotebookNode RootNode { get; set; }
     }
 }

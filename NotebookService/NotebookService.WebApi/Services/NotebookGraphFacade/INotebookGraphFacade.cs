@@ -9,6 +9,5 @@ namespace NotebookService.WebApi.Services.NotebookGraphFacade
         Task<NotebookGraph> CreateNotebookGraph(CreateNotebookGraphRequest request);
         Task<IEnumerable<NotebookGraph>> GetAllNotebookGraph();
         Task<ScheduledNotebook> ScheduleNotebookGraph(ScheduleNotebookGraphRequest request);
-        Task<IEnumerable<ScheduledNotebook>> ScheduleNextNotebooks(ScheduleNextNotebooksRequest request);
     }
 }

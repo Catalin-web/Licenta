@@ -4,7 +4,6 @@ namespace NotebookService.Models.Requests.NotebookGraph
 {
     public class CreateNotebookGraphRequest
     {
-        public NotebookNode StartingNotebook { get; set; }
-        public IDictionary<string, IEnumerable<NotebookNode>> Nodes { get; set; }
+        public NotebookNode RootNode { get; set; }
     }
 }
