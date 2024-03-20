@@ -59,9 +59,11 @@ def init_scheduled_notebook(
     file_service_client.download_notebook(
         scheduled_notebook.notebook_name, notebook_output_file_path
     )
+    input_parameters_list = [parameter.to_dict() for parameter in scheduled_notebook.input_parameters]
+
     with open(input_parameters_output_file_path, "w") as file:
-        for input_parameter in scheduled_notebook.input_parameters:
-            file.write(f"{input_parameter.name}={input_parameter.value}\n")
+        json.dump({"parameters": input_parameters_list}, file)
+
     with open(output_parameters_names_output_file_path, "w") as file:
         for output_parameter_name in scheduled_notebook.output_parameters_names:
             file.write(f"{output_parameter_name}\n")

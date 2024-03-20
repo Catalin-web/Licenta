@@ -16,6 +16,12 @@ class NotebookParameter:
         return NotebookParameter(
             name=notebook_parameter_dict["name"], value=notebook_parameter_dict["value"]
         )
+    
+    def to_dict(self):
+        return {
+            "name": self.name,
+            "value": self.value,
+        }
 
 
 @dataclasses.dataclass(frozen=True)

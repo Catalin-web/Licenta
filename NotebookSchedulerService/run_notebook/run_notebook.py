@@ -47,8 +47,9 @@ def write_output_parameters_to_file(
 
 def get_input_parameter_in_locals(input_parameters_file_path: str, locals: dict):
     with open(input_parameters_file_path, "r") as f:
-        for input_parameter_with_equal in f.readlines():
-            name, value = input_parameter_with_equal.split("=")
+        dict = json.load(f)
+        for input_parameter in dict["parameters"]:
+            name, value = input_parameter["name"], input_parameter["value"]
             locals[name] = value
 
 

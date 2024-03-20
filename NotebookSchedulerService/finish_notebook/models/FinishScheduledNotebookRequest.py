@@ -32,8 +32,10 @@ class FinishScheduledNotebookRequest:
     output_parameters: list[NotebookParameter]
 
     def to_dict(self):
-        return {
+        dict = {
             "scheduledNotebookId": self.scheduled_notebook_id,
             "status": self.status.value,
             "outputParameters": [param.to_dict() for param in self.output_parameters],
         }
+        print(dict)
+        return dict

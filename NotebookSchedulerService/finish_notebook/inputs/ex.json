@@ -1,0 +1,11 @@
+{
+	"scheduledNotebookId": "65f07de2923c4626bdfaafb1",
+	"status": 1,
+	"outputParameters": [
+		{ "name": "parameter_parent", "value": "value_parent\n" },
+		{
+			"name": "instagram_description_parent",
+			"value": " instagram_description_parent = \"A photo or video of your food creation.\"\n\ndef create_instagram_post(instagram_description_parent):\n    # Code to generate and display the Instagram post with a given description.\n\n"
+		}
+	]
+}

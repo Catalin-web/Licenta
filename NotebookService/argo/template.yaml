@@ -73,7 +73,7 @@ spec:
         path: /output_parameters_names.txt
     container:
       # run cowsay with that message input parameter as args
-      image: catalibugnar/initialize_notebook
+      image: catalibugnar/initialize_notebook@sha256:70802c1b95c1fa64ff89a6a30ee9bb7e47dd51ed85e76b7602e4c58c2000cccb
       command: [python3, /app/init_notebook.py]
       args:
       - --notebook_service_url
@@ -104,7 +104,7 @@ spec:
         path: /generated_output_parameters.json
     container:
       # run cowsay with that message input parameter as args
-      image: catalibugnar/generate_parameter
+      image: catalibugnar/generate_parameter@sha256:e125bc24bba22391b9eedfd44558724ff6949b9058e8bc8bffac1d5cf3ce3e39
       command: [python3, /app/generate_parameter.py]
       args:
       - --generator_service_url
@@ -131,7 +131,7 @@ spec:
         path: /output_parameters_output.txt
     container:
       # run cowsay with that message input parameter as args
-      image: catalibugnar/run_notebook
+      image: catalibugnar/run_notebook@sha256:d8169d86083de518190c2fe496268542eda8e34af88537c175f5c7d20c36efdd
       command: [python3, /app/run_notebook.py]
       args:
       - --notebook_input_path
@@ -155,7 +155,7 @@ spec:
         path: /output_parameters_file_path.txt
     container:
       # run cowsay with that message input parameter as args
-      image: catalibugnar/finish_notebook@sha256:4cb7790b592b1527a67b67a69b34572e29cf536218ecb849f08955e6fb1979cc
+      image: catalibugnar/finish_notebook@sha256:1f3ae90fbb2c23f0ec33c260fb0ecdaa4cc2cd2f9e375859b9d23b2a2766955f
       command: [python3, /app/finish_notebook.py]
       args:
       - --notebook_service_url

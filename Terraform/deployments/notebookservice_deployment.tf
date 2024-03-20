@@ -18,7 +18,7 @@ resource "kubernetes_deployment" "notebookservice_deployment" {
       spec {
         container {
           name  = "notebookservice"
-          image = "catalibugnar/notebookservice:latest@sha256:09b93ac27d18236729fff151bfebd0bd2756e38a1b665a895c3216e97c016425"
+          image = "catalibugnar/notebookservice:latest"
           port {
             container_port = 12700
           }

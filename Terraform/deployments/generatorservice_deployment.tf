@@ -18,7 +18,7 @@ resource "kubernetes_deployment" "generatorservice" {
       spec {
         container {
           name  = "generatorservice"
-          image = "catalibugnar/generatorservice:latest@sha256:5c3395823147ccb3e20dd8013bebee33d2d925bb761403c18fe1b6c81a445f79"
+          image = "catalibugnar/generatorservice:latest"
           port {
             container_port = 12800
           }
@@ -29,6 +29,10 @@ resource "kubernetes_deployment" "generatorservice" {
           env {
             name  = "GENERATORSERVICE_PORT"
             value = "12800"
+          }
+          env {
+            name  = "GENERATORSERVICE_CONNECTION_STRING"
+            value = "mongodb://mongodb.default.svc.cluster.local:27017/app"
           }
           env {
             name  = "OLLAMA_URL"

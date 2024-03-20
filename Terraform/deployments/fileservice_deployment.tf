@@ -18,7 +18,7 @@ resource "kubernetes_deployment" "fileservice" {
       spec {
         container {
           name  = "fileservice"
-          image = "catalibugnar/fileservice:latest@sha256:70c6586dfdd5980d013f0e6ac08bb3af43c1491fba2397d52cbe56486bb04d45"
+          image = "catalibugnar/fileservice:latest"
           port {
             container_port = 12600
           }
