@@ -41,6 +41,26 @@ d) Workflow history in druid ??
 TODOS:
 a) Make a job when pulling request, instead of making it synchronous X
 
-10) UI
+10) UI X
 
 11) WRITE
+
+11) Make a menu taskbar X
+
+12) Add Notebook page
+
+13) Add jobs page
+
+14) Add models page
+
+15) Add triggernotebook page
+
+16) Add notebook history page
+
+17) Add notebook graph page
+
+18) Scheduler service
+
+19) Add login page
+
+20) 
