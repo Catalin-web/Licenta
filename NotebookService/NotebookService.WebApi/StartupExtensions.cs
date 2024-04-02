@@ -79,6 +79,7 @@ namespace NotebookService.WebApi
         public static IServiceCollection SetupBackgroundServices(this IServiceCollection services)
         {
             services.AddHostedService<ScheduleNotebookBackgroundService>();
+            services.AddHostedService<StartingGraphBackgroundService>();
             return services;
         }
 

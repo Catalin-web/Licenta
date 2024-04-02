@@ -1,4 +1,5 @@
-﻿using NotebookService.DataStore.Mongo.NotebookGraphProvider;
+﻿using Microsoft.AspNetCore.Mvc.Routing;
+using NotebookService.DataStore.Mongo.NotebookGraphProvider;
 using NotebookService.DataStore.Mongo.ScheduleNotebookProvider;
 using NotebookService.Models.Entities.NotebookGraph;
 using NotebookService.Models.Entities.ScheduleNotebook;
@@ -17,7 +18,7 @@ namespace NotebookService.WebApi.Services.NotebookGraphFacade
             _notebookNodeProvider = notebookGraphProvider;
         }
 
-        public async Task<NotebookNode> CreateStartingNode(CreateNotebookGraphRequest request)
+        public async Task<NotebookNode> CreateStartingNode(CreateNotebookNodeRequest request)
         {
             var notebookGraph = new NotebookNode()
             {
@@ -36,6 +37,56 @@ namespace NotebookService.WebApi.Services.NotebookGraphFacade
         public async Task<IEnumerable<NotebookNode>> GetAllNotebookNodes()
         {
             return await _notebookNodeProvider.GetAllAsync(notebookGraph => true);
+        }
+
+        public async Task<NotebookNode> GetNotebookNodeById(string notebookNodeId)
+        {
+            return await _notebookNodeProvider.GetAsync(notebookNode => notebookNode.Id == notebookNodeId);
+        }
+
+        public async Task<IEnumerable<NotebookNode>> GetAllChildNotebookNodes(string notebookNodeId)
+        {
+            var notebookNodeIds = (await _notebookNodeProvider.GetAsync(notebookNode => notebookNode.Id == notebookNodeId)).ChildNodeIds;
+            var childNotebookNodes = new List<NotebookNode>();
+            foreach (var childNodeId in notebookNodeIds)
+            {
+                var childNode = await _notebookNodeProvider.GetAsync(notebookNode => notebookNode.Id == childNodeId);
+                childNotebookNodes.Add(childNode);
+            }
+            return childNotebookNodes;
+        }
+
+        public async Task<NotebookGraph> GetNotebookGraph(string notebookNodeId)
+        {
+            var notebookNode = await _notebookNodeProvider.GetAsync(notebookNode => notebookNode.Id == notebookNodeId);
+            var childGraphs = new List<NotebookGraph>();
+            foreach (var childNotebookNodeId in notebookNode.ChildNodeIds)
+            {
+                var childGraph = await GetNotebookGraph(childNotebookNodeId);
+                childGraphs.Add(childGraph);
+            }
+            return new NotebookGraph()
+            {
+                NotebookNode = notebookNode,
+                ChildGraphs = childGraphs
+            };
+        }
+
+        public async Task<NotebookGraph> DeleteNotebookGraph(string notebookNodeId)
+        {
+            var notebookNode = await _notebookNodeProvider.GetAsync(notebookNode => notebookNode.Id == notebookNodeId);
+            await _notebookNodeProvider.DeleteAsync(notebookNode => notebookNode.Id == notebookNodeId);
+            var childGraphs = new List<NotebookGraph>();
+            foreach (var childNotebookNodeId in notebookNode.ChildNodeIds)
+            {
+                var childGraph = await DeleteNotebookGraph(childNotebookNodeId);
+                childGraphs.Add(childGraph);
+            }
+            return new NotebookGraph()
+            {
+                NotebookNode = notebookNode,
+                ChildGraphs = childGraphs
+            };
         }
 
         public async Task<AddDependencyBetweenNodesResponse> AddDependencyBetweenNotebookNodes(AddDependencyBetweenNodesRequest request)
@@ -79,6 +130,42 @@ namespace NotebookService.WebApi.Services.NotebookGraphFacade
             };
             await _scheduleNotebookProvider.InsertAsync(scheduledNotebook);
             return scheduledNotebook;
+        }
+
+        public async Task<IEnumerable<NotebookNode>> GetAllStartingNotebookNodes()
+        {
+            return await _notebookNodeProvider.GetAllAsync(notebookNode => notebookNode.StartingNodeId == null);
+        }
+
+        public async Task<NotebookGraph> CreateNotebookGraph(NotebookNodeModel notebookNodeModel, string parentNotebookNodeId = null)
+        {
+            var createNotebookNodeRequest = new CreateNotebookNodeRequest()
+            {
+                NotebookName = notebookNodeModel.NotebookName,
+                InputParameters = notebookNodeModel.InputParameters,
+                InputParameterstoGenerate = notebookNodeModel.InputParameterstoGenerate,
+                OutputParametersNames = notebookNodeModel.OutputParametersNames
+            };
+            var notebookNode = await CreateStartingNode(createNotebookNodeRequest);
+            if (parentNotebookNodeId != null) 
+            {
+                var addDependencyRequest = new AddDependencyBetweenNodesRequest()
+                {
+                    ParentNodeId = parentNotebookNodeId,
+                    ChildNodeId = notebookNode.Id
+                };
+                await AddDependencyBetweenNotebookNodes(addDependencyRequest);
+            }
+            var childGraphs = new List<NotebookGraph>();
+            foreach(var childNotebookModel in notebookNodeModel.ChildNodes)
+            {
+                childGraphs.Add(await CreateNotebookGraph(childNotebookModel, notebookNode.Id));
+            }
+            return new NotebookGraph()
+            {
+                NotebookNode = notebookNode,
+                ChildGraphs = childGraphs
+            };
         }
     }
 }

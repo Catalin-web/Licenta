@@ -24,7 +24,7 @@ namespace NotebookService.WebApi.Controllers
         [HttpPost]
         [Route("create")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<NotebookNode>> CreateStartingNotebookNodeAsync(CreateNotebookGraphRequest request)
+        public async Task<ActionResult<NotebookNode>> CreateStartingNotebookNodeAsync(CreateNotebookNodeRequest request)
         {
             try
             {
@@ -61,13 +61,127 @@ namespace NotebookService.WebApi.Controllers
         /// </summary>
         /// <response code="200">Get all notebook nodes.</response>
         [HttpGet]
-        [Route("")]
+        [Route("node")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<NotebookNode>>> GetAllNotebookNodes()
         {
             try
             {
                 return Ok(await _notebookGraphFacade.GetAllNotebookNodes());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Get all child nodes of a notebookNode.
+        /// </summary>
+        /// <response code="200">Get all notebook nodes.</response>
+        [HttpGet]
+        [Route("node/child/{parentNodeId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<NotebookNode>>> GetAllChildNodesOfANotebookNode(string parentNodeId)
+        {
+            try
+            {
+                return Ok(await _notebookGraphFacade.GetAllChildNotebookNodes(parentNodeId));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Get all graph.
+        /// </summary>
+        /// <response code="200">Get all graph.</response>
+        [HttpGet]
+        [Route("node/graph")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<NotebookNode>>> GetAllStartingNotebookNodes()
+        {
+            try
+            {
+                return Ok(await _notebookGraphFacade.GetAllStartingNotebookNodes());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Create notebook graph.
+        /// </summary>
+        /// <response code="200">Create notebook graph.</response>
+        [HttpPost]
+        [Route("node/graph")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<NotebookGraph>> CreateNotebookGraph(CreateNotebookGraphRequest request)
+        {
+            try
+            {
+                return Ok(await _notebookGraphFacade.CreateNotebookGraph(request.RootNode));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Get all graph.
+        /// </summary>
+        /// <response code="200">Get all graph.</response>
+        [HttpGet]
+        [Route("node/graph/{startingNodeId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<NotebookGraph>> GetAllGraphFromStartingNodeAsync(string startingNodeId)
+        {
+            try
+            {
+                return Ok(await _notebookGraphFacade.GetNotebookGraph(startingNodeId));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Delete notebook graph.
+        /// </summary>
+        /// <response code="200">Deleted notebook graph.</response>
+        [HttpDelete]
+        [Route("node/graph/{startingNodeId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<NotebookGraph>> DeleteNotebookGraph(string startingNodeId)
+        {
+            try
+            {
+                return Ok(await _notebookGraphFacade.DeleteNotebookGraph(startingNodeId));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Get all graph.
+        /// </summary>
+        /// <response code="200">Get all graph.</response>
+        [HttpGet]
+        [Route("node/id/{notebookNodeId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<NotebookNode>> GetNotebookNodebyIdAsync(string notebookNodeId)
+        {
+            try
+            {
+                return Ok(await _notebookGraphFacade.GetNotebookNodeById(notebookNodeId));
             }
             catch (Exception ex)
             {
