@@ -19,6 +19,6 @@ namespace NotebookService.Models.Entities.ScheduleNotebook
         public IEnumerable<NotebookParameterToGenerate> InputParametersToGenerate { get; set; }
         public IEnumerable<NotebookParameter> OutputParameters { get; set; }
         public IEnumerable<string> OutputParametersNames { get; set; }
-        public IEnumerable<NotebookNode> ChildNodes { get; set; }
+        public string NotebookNodeId { get; set; }
     }
 }

@@ -49,7 +49,7 @@ namespace NotebookService.WebApi
         {
             services.AddSingleton<IScheduleNotebookProvider, ScheduleNotebookProvider>();
             services.AddSingleton<IScheduleNotebookHistoryProvider, ScheduleNotebookHistoryProvider>();
-            services.AddSingleton<INotebookGraphProvider, NotebookGraphProvider>();
+            services.AddSingleton<INotebookNodeProvider, NotebookNodeProvider>();
             return services;
         }
 
@@ -72,7 +72,7 @@ namespace NotebookService.WebApi
                      ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; }
                  }
             );
-            services.AddSingleton<INotebookGraphFacade, NotebookGraphFacade>();
+            services.AddSingleton<INotebookNodeFacade, NotebookNodeFacade>();
             return services;
         }
 

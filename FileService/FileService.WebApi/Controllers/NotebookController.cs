@@ -1,4 +1,5 @@
 ﻿using Fileservice.Models.Entities;
+using Fileservice.Models.Requests;
 using Fileservice.WebApi.Services.NotebookFacade;
 using Microsoft.AspNetCore.Mvc;
 using Minio.Exceptions;
@@ -26,7 +27,7 @@ namespace Fileservice.WebApi.Controllers
         {
             try
             {
-                var notebookWithParametersAndMetadata = await _notebookFacade.UploadNotebook(notebookName, file);
+                var notebookWithParametersAndMetadata = await _notebookFacade.UploadNotebookAsync(notebookName, file);
                 return Ok(notebookWithParametersAndMetadata);
             }
             catch (Exception ex)
@@ -48,9 +49,28 @@ namespace Fileservice.WebApi.Controllers
             {
                 using(MemoryStream memoryStream = new MemoryStream())
                 {
-                    var contentType = await _notebookFacade.DownloadNotebook(memoryStream, notebookName);
+                    var contentType = await _notebookFacade.DownloadNotebookAsync(memoryStream, notebookName);
                     return File(memoryStream.ToArray(), contentType, notebookName);
                 }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Delete notebook.
+        /// </summary>
+        /// <response code="200">Delete notebook.</response>
+        [HttpDelete]
+        [Route("delete/{notebookFileId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<Notebook>> DeleteNotebookAsync(string notebookFileId)
+        {
+            try
+            {
+                return Ok(await _notebookFacade.DeleteNotebook(notebookFileId));
             }
             catch (Exception ex)
             {
@@ -69,7 +89,7 @@ namespace Fileservice.WebApi.Controllers
         {
             try
             {
-                return Ok(await _notebookFacade.GetAllNotebooks());
+                return Ok(await _notebookFacade.GetAllNotebooksAsync());
             }
             catch (Exception ex)
             {
@@ -88,7 +108,7 @@ namespace Fileservice.WebApi.Controllers
         {
             try
             {
-                var notebookWithParametersAndMetadata = await _notebookFacade.GetNotebookByName(notebookName);
+                var notebookWithParametersAndMetadata = await _notebookFacade.GetNotebookByNameAsync(notebookName);
                 if (notebookWithParametersAndMetadata == null)
                 {
                     return Ok();

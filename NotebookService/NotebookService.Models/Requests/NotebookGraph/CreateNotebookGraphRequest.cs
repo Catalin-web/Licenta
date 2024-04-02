@@ -1,9 +1,12 @@
-﻿using NotebookService.Models.Entities.NotebookGraph;
+﻿using NotebookService.Models.Entities.ScheduleNotebook;
 
 namespace NotebookService.Models.Requests.NotebookGraph
 {
     public class CreateNotebookGraphRequest
     {
-        public NotebookNode RootNode { get; set; }
+        public string NotebookName { get; set; }
+        public IEnumerable<NotebookParameter> InputParameters { get; set; }
+        public IEnumerable<NotebookParameterToGenerate> InputParameterstoGenerate { get; set; }
+        public IEnumerable<string> OutputParametersNames { get; set; }
     }
 }

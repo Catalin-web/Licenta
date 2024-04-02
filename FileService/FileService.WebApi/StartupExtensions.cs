@@ -29,7 +29,7 @@ namespace Userservice.WebApi
                 {
                     Version = "1",
                     Title = "File Service",
-                    Description = "This service manage files.",
+                    Description = "Microservice for managing files and their metadata.",
                     Contact = new OpenApiContact
                     {
                         Name = "Catalin Bugnar",

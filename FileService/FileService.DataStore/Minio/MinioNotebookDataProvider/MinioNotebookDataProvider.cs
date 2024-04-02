@@ -58,6 +58,20 @@ namespace Fileservice.DataStore.Minio.NotebookDataProvider
             }
         }
 
+        public async Task DeleteNotebookFromMinio(string notebookName, string bucketName)
+        {
+            try
+            {
+                var deleteArgs = new RemoveObjectArgs()
+                    .WithObject(notebookName)
+                    .WithBucket(bucketName);
+                await _minioClient.RemoveObjectAsync(deleteArgs);
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
         private async Task MakeBucketIfItDoesNotExists(string bucketName)
         {
             BucketExistsArgs bucketExistsArgs = new BucketExistsArgs()
