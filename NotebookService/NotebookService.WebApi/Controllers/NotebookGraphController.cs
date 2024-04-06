@@ -18,45 +18,6 @@ namespace NotebookService.WebApi.Controllers
         }
 
         /// <summary>
-        /// Create a notebook graph.
-        /// </summary>
-        /// <response code="200">Create a notebook graph.</response>
-        [HttpPost]
-        [Route("create")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<NotebookNode>> CreateStartingNotebookNodeAsync(CreateNotebookNodeRequest request)
-        {
-            try
-            {
-                var notebookGraph = await _notebookGraphFacade.CreateStartingNode(request);
-                return Ok(notebookGraph);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// Add dependency between 2 nodes.
-        /// </summary>
-        /// <response code="200">Add dependency between 2 nodes.</response>
-        [HttpPost]
-        [Route("create/dependency")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<AddDependencyBetweenNodesResponse>> AddDependencyBetweenTwoNodesAsync(AddDependencyBetweenNodesRequest request)
-        {
-            try
-            {
-                return Ok(await _notebookGraphFacade.AddDependencyBetweenNotebookNodes(request));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        /// <summary>
         /// Get all notebook nodes.
         /// </summary>
         /// <response code="200">Get all notebook nodes.</response>
@@ -182,6 +143,45 @@ namespace NotebookService.WebApi.Controllers
             try
             {
                 return Ok(await _notebookGraphFacade.GetNotebookNodeById(notebookNodeId));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Create a notebook graph.
+        /// </summary>
+        /// <response code="200">Create a notebook graph.</response>
+        [HttpPost]
+        [Route("node")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<NotebookNode>> CreateStartingNotebookNodeAsync(CreateNotebookNodeRequest request)
+        {
+            try
+            {
+                var notebookGraph = await _notebookGraphFacade.CreateStartingNode(request);
+                return Ok(notebookGraph);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Add dependency between 2 nodes.
+        /// </summary>
+        /// <response code="200">Add dependency between 2 nodes.</response>
+        [HttpPost]
+        [Route("node/dependency")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<AddDependencyBetweenNodesResponse>> AddDependencyBetweenTwoNodesAsync(AddDependencyBetweenNodesRequest request)
+        {
+            try
+            {
+                return Ok(await _notebookGraphFacade.AddDependencyBetweenNotebookNodes(request));
             }
             catch (Exception ex)
             {

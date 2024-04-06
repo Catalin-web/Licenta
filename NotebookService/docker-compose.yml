@@ -20,7 +20,7 @@ services:
       - otel
 
   mongodb:
-    image: bitnami/mongodb:6.0.2
+    image: bitnami/mongodb:7.0.8
     container_name: mongodb
     environment:
       MONGO_INITDB_DATABASE: app
