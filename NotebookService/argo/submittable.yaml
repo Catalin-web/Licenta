@@ -10,6 +10,6 @@ spec:
   arguments:
     parameters:
       - name: scheduled_notebook_id
-        value: 65f33c8b9e47eaa3a5a05fdb
+        value: 66123b940263ba0de6361df5
   workflowTemplateRef:
     name: handle-notebook-workflow

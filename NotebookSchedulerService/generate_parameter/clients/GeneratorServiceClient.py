@@ -15,4 +15,5 @@ class GeneratorServiceClient:
             f"{self.generator_service_url}/generatorService/generate",
             json=notebook_parameter_to_generate.to_dict(),
         )
+        response.raise_for_status()
         return ParameterGeneratorResponse.from_dict(response.json())

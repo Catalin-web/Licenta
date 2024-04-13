@@ -28,11 +28,13 @@ namespace NotebookService.WebApi.Services.ScheduleNotebookFacade
                 FinishedAt = null,
                 Progress = Progress.CREATED,
                 Status = Status.NONE,
+                ErrorMessage = string.Empty,
                 InputParameters = scheduleNotebookRequest.InputParameters,
                 InputParametersToGenerate = scheduleNotebookRequest.InputParameterstoGenerate,
                 OutputParametersNames = scheduleNotebookRequest.OutputParametersNames,
                 OutputParameters = new List<NotebookParameter>(),
-                NotebookNodeId = null
+                NotebookNodeId = null,
+                GraphUniqueId = null
             };
             await _scheduleNotebookProvider.InsertAsync(scheduledNotebook);
             return scheduledNotebook;
@@ -47,6 +49,7 @@ namespace NotebookService.WebApi.Services.ScheduleNotebookFacade
         {
             var scheduledNotebook = await _scheduleNotebookProvider.GetAsync(scheduledNotebook => scheduledNotebook.Id == finishScheduledNotebookRequest.ScheduledNotebookId);
             scheduledNotebook.Status = finishScheduledNotebookRequest.Status;
+            scheduledNotebook.ErrorMessage = finishScheduledNotebookRequest.ErrorMessage;
             scheduledNotebook.OutputParameters = finishScheduledNotebookRequest.OutputParameters;
             scheduledNotebook.Progress = Progress.COMPLETED;
             scheduledNotebook.FinishedAt = DateTime.UtcNow;
@@ -54,25 +57,30 @@ namespace NotebookService.WebApi.Services.ScheduleNotebookFacade
             await _scheduleNotebookProvider.DeleteAsync(scheduledNotebook => scheduledNotebook.Id == finishScheduledNotebookRequest.ScheduledNotebookId);
             await _scheduleNotebookHistoryProvider.InsertAsync(scheduledNotebook);
             var notebookNode = await _notebookNodeProvider.GetAsync(notebookNode => notebookNode.Id == scheduledNotebook.NotebookNodeId);
-            foreach (var childNodeId in notebookNode.ChildNodeIds)
+            if (notebookNode != null)
             {
-                var childNode = await _notebookNodeProvider.GetAsync(notebookNode => notebookNode.Id == childNodeId);
-                var inputParameters = childNode.InputParameters.ToList();
-                inputParameters.AddRange(scheduledNotebook.OutputParameters);
-                var newScheduledNotebook = new ScheduledNotebook()
+                foreach (var childNodeId in notebookNode.ChildNodeIds)
                 {
-                    NotebookName = childNode.NotebookName,
-                    CreatedAt = DateTime.UtcNow,
-                    FinishedAt = null,
-                    Progress = Progress.CREATED,
-                    Status = Status.NONE,
-                    InputParameters = inputParameters,
-                    InputParametersToGenerate = childNode.InputParameterstoGenerate,
-                    OutputParametersNames = childNode.OutputParametersNames,
-                    OutputParameters = new List<NotebookParameter>(),
-                    NotebookNodeId = childNodeId
-                };
-                await _scheduleNotebookProvider.InsertAsync(newScheduledNotebook);
+                    var childNode = await _notebookNodeProvider.GetAsync(notebookNode => notebookNode.Id == childNodeId);
+                    var inputParameters = childNode.InputParameters.ToList();
+                    inputParameters.AddRange(scheduledNotebook.OutputParameters);
+                    var newScheduledNotebook = new ScheduledNotebook()
+                    {
+                        NotebookName = childNode.NotebookName,
+                        CreatedAt = DateTime.UtcNow,
+                        FinishedAt = null,
+                        Progress = Progress.CREATED,
+                        Status = Status.NONE,
+                        ErrorMessage = string.Empty,
+                        InputParameters = inputParameters,
+                        InputParametersToGenerate = childNode.InputParameterstoGenerate,
+                        OutputParametersNames = childNode.OutputParametersNames,
+                        OutputParameters = new List<NotebookParameter>(),
+                        NotebookNodeId = childNodeId,
+                        GraphUniqueId = scheduledNotebook.GraphUniqueId
+                    };
+                    await _scheduleNotebookProvider.InsertAsync(newScheduledNotebook);
+                }
             }
             return scheduledNotebook;
         }

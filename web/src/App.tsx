@@ -6,6 +6,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import MyNavbar from './header/MyNavbar';
 import OpenSourceModelsPage from './pages/OpenSourceModels/OpenSourceModelsPage';
 import JobsPage from './pages/Jobs/JobsPage';
+import ScheduleNotebookPage from './pages/ScheduledNotebook/ScheduleNotebookPage';
 function App() {
 	return (
 		<>
@@ -14,6 +15,10 @@ function App() {
 				<Routes>
 					<Route path='/models' element={<OpenSourceModelsPage />} />
 					<Route path='/jobs' element={<JobsPage />} />
+					<Route
+						path='/scheduledNotebooks'
+						element={<ScheduleNotebookPage />}
+					/>
 				</Routes>
 			</BrowserRouter>
 		</>

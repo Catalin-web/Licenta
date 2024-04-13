@@ -11,4 +11,6 @@ CMD ["python3", "/app/init_notebook.py",\
     "--notebook_output_file_path", "./outputs/notebook_output.ipynb", \ 
     "--input_parameters_output_file_path", "./outputs/input_parameters.json", \
     "--input_parameters_to_generate_output_file_path", "./outputs/input_parameters_to_generate.json", \
-    "--output_parameters_names_output_file_path", "./outputs/output_parameters_names.txt"]
+    "--output_parameters_names_output_file_path", "./outputs/output_parameters_names.txt", \
+    "--has_errors_output_file_path", "./outputs/has_errors.txt", \
+    "--error_message_output_file_path", "./outputs/error_message.txt"]

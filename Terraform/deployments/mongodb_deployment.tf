@@ -18,13 +18,23 @@ resource "kubernetes_deployment" "mongodb_deployment" {
             spec {
                 container {
                     name = "mongodb"
-                    image = "bitnami/mongodb:6.0.2"
+                    image = "bitnami/mongodb:7.0.2"
                     port {
                         container_port = 27017
                     }
                     env {
                         name = "MONGO_INITDB_DATABASE"
                         value = "app"
+                    }
+                    resources {
+                        limits = {
+                            cpu    = "100m"
+                            memory = "256Mi"
+                        }
+                        requests = {
+                            cpu    = "100m"
+                            memory = "256Mi"
+                        }
                     }
                 }
             }
@@ -44,6 +54,6 @@ resource "kubernetes_service" "mongodb_service" {
             port = 27017
             target_port = 27017
         }
-        type = "ClusterIP"
+        type = "NodePort"
     }
 }

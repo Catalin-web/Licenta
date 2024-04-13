@@ -35,6 +35,14 @@ from models.UpdateProgressOfScheduledNotebookRequest import (
     "--output_parameters_names_output_file_path",
     type=click.STRING,
 )
+@click.option(
+    "--has_errors_output_file_path",
+    type=click.STRING,
+)
+@click.option(
+    "--error_message_output_file_path",
+    type=click.STRING,
+)
 def init_scheduled_notebook(
     notebook_service_url: str,
     file_service_url: str,
@@ -43,42 +51,58 @@ def init_scheduled_notebook(
     input_parameters_output_file_path: str,
     input_parameters_to_generate_output_file_path: str,
     output_parameters_names_output_file_path: str,
+    has_errors_output_file_path: str,
+    error_message_output_file_path: str,
 ):
-    notebook_service_client = NotebookServiceClient(notebook_service_url)
-    file_service_client = FileServiceClient(file_service_url)
-    update_progress_of_scheduled_notebook_request = (
-        UpdateProgressOfScheduledNotebookRequest(
-            scheduled_notebook_id=scheduled_notebook_id, progress=Progress.IN_PROGRESS
+    has_error = False
+    try:
+        notebook_service_client = NotebookServiceClient(notebook_service_url)
+        file_service_client = FileServiceClient(file_service_url)
+        update_progress_of_scheduled_notebook_request = (
+            UpdateProgressOfScheduledNotebookRequest(
+                scheduled_notebook_id=scheduled_notebook_id,
+                progress=Progress.IN_PROGRESS,
+            )
         )
-    )
-    scheduled_notebook = (
-        notebook_service_client.update_progress_of_a_scheduled_notebook(
-            update_progress_of_scheduled_notebook_request
+        scheduled_notebook = (
+            notebook_service_client.update_progress_of_a_scheduled_notebook(
+                update_progress_of_scheduled_notebook_request
+            )
         )
-    )
-    file_service_client.download_notebook(
-        scheduled_notebook.notebook_name, notebook_output_file_path
-    )
-    input_parameters_list = [parameter.to_dict() for parameter in scheduled_notebook.input_parameters]
-
-    with open(input_parameters_output_file_path, "w") as file:
-        json.dump({"parameters": input_parameters_list}, file)
-
-    with open(output_parameters_names_output_file_path, "w") as file:
-        for output_parameter_name in scheduled_notebook.output_parameters_names:
-            file.write(f"{output_parameter_name}\n")
-
-    list_of_input_parameters_to_generate = []
-    for input_parameter_to_generate in scheduled_notebook.input_parameters_to_generate:
-        list_of_input_parameters_to_generate.append(
-            input_parameter_to_generate.to_dict()
+        file_service_client.download_notebook(
+            scheduled_notebook.notebook_name, notebook_output_file_path
         )
-    json_input_parameters_to_generate = {
-        "inputParametersToGenerate": list_of_input_parameters_to_generate
-    }
-    with open(input_parameters_to_generate_output_file_path, "w") as file:
-        string_to_write = json.dumps(json_input_parameters_to_generate)
-        file.write(string_to_write)
+        input_parameters_list = [
+            parameter.to_dict() for parameter in scheduled_notebook.input_parameters
+        ]
+
+        with open(input_parameters_output_file_path, "w") as file:
+            json.dump({"parameters": input_parameters_list}, file)
+
+        with open(output_parameters_names_output_file_path, "w") as file:
+            for output_parameter_name in scheduled_notebook.output_parameters_names:
+                file.write(f"{output_parameter_name}\n")
+
+        list_of_input_parameters_to_generate = []
+        for (
+            input_parameter_to_generate
+        ) in scheduled_notebook.input_parameters_to_generate:
+            list_of_input_parameters_to_generate.append(
+                input_parameter_to_generate.to_dict()
+            )
+        json_input_parameters_to_generate = {
+            "inputParametersToGenerate": list_of_input_parameters_to_generate
+        }
+        with open(input_parameters_to_generate_output_file_path, "w") as file:
+            string_to_write = json.dumps(json_input_parameters_to_generate)
+            file.write(string_to_write)
+    except Exception as ex:
+        has_error = True
+        with open(error_message_output_file_path, "w") as file:
+            file.write(str(ex))
+    finally:
+        with open(has_errors_output_file_path, "w") as file:
+            file.write(str(has_error))
 
 
 if __name__ == "__main__":

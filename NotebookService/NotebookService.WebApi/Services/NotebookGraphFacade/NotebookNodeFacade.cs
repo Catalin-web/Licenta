@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc.Routing;
-using NotebookService.DataStore.Mongo.NotebookGraphProvider;
+﻿using NotebookService.DataStore.Mongo.NotebookGraphProvider;
+using NotebookService.DataStore.Mongo.ScheduleNotebookHistoryProvider;
 using NotebookService.DataStore.Mongo.ScheduleNotebookProvider;
 using NotebookService.Models.Entities.NotebookGraph;
 using NotebookService.Models.Entities.ScheduleNotebook;
 using NotebookService.Models.Requests.NotebookGraph;
 using NotebookService.Models.Responses.NotebookGraph;
+using ZstdSharp.Unsafe;
 
 namespace NotebookService.WebApi.Services.NotebookGraphFacade
 {
@@ -12,10 +13,12 @@ namespace NotebookService.WebApi.Services.NotebookGraphFacade
     {
         private readonly IScheduleNotebookProvider _scheduleNotebookProvider;
         private readonly INotebookNodeProvider _notebookNodeProvider;
-        public NotebookNodeFacade(IScheduleNotebookProvider scheduleNotebookProvider, INotebookNodeProvider notebookGraphProvider)
+        private readonly IScheduleNotebookHistoryProvider _scheduleNotebookHistoryProvider;
+        public NotebookNodeFacade(IScheduleNotebookProvider scheduleNotebookProvider, INotebookNodeProvider notebookNodeProvider, IScheduleNotebookHistoryProvider scheduleNotebookHistoryProvider)
         {
             _scheduleNotebookProvider = scheduleNotebookProvider;
-            _notebookNodeProvider = notebookGraphProvider;
+            _notebookNodeProvider = notebookNodeProvider;
+            _scheduleNotebookHistoryProvider = scheduleNotebookHistoryProvider;
         }
 
         public async Task<NotebookNode> CreateStartingNode(CreateNotebookNodeRequest request)
@@ -122,13 +125,16 @@ namespace NotebookService.WebApi.Services.NotebookGraphFacade
                 FinishedAt = null,
                 Progress = Progress.CREATED,
                 Status = Status.NONE,
+                ErrorMessage = string.Empty,
                 InputParameters = notebookNode.InputParameters,
                 InputParametersToGenerate = notebookNode.InputParameterstoGenerate,
                 OutputParametersNames = notebookNode.OutputParametersNames,
                 OutputParameters = new List<NotebookParameter>(),
-                NotebookNodeId = request.NotebookNodeId
+                NotebookNodeId = request.NotebookNodeId,
+                GraphUniqueId = Guid.NewGuid().ToString(),
             };
             await _scheduleNotebookProvider.InsertAsync(scheduledNotebook);
+
             return scheduledNotebook;
         }
 
@@ -164,6 +170,50 @@ namespace NotebookService.WebApi.Services.NotebookGraphFacade
             return new NotebookGraph()
             {
                 NotebookNode = notebookNode,
+                ChildGraphs = childGraphs
+            };
+        }
+
+        public async Task<NotebookScheduledGraph> GetNotebookScheduledGraphById(string graphUniqueId)
+        {
+            var randomScheduledNotebook = await _scheduleNotebookProvider.GetAsync(scheduledNotebook => scheduledNotebook.GraphUniqueId == graphUniqueId);
+            if (randomScheduledNotebook == null)
+            {
+                randomScheduledNotebook = await _scheduleNotebookHistoryProvider.GetAsync(scheduledNotebook => scheduledNotebook.GraphUniqueId == graphUniqueId);
+            }
+            var randomNotebookNode = await _notebookNodeProvider.GetAsync(notebookNode => notebookNode.Id == randomScheduledNotebook.NotebookNodeId);
+            NotebookNode? startingNode = null;
+            if (randomNotebookNode.StartingNodeId != null)
+            {
+                startingNode = await _notebookNodeProvider.GetAsync(notebookNode => notebookNode.Id == randomNotebookNode.StartingNodeId);
+            }
+            else
+            {
+                startingNode = randomNotebookNode;
+            }
+            var notebookGraph = await GetNotebookGraph(startingNode.Id);
+            return await GetNotebookScheduledGraphByNotebookGraph(graphUniqueId, notebookGraph);
+        }
+
+        private async Task<NotebookScheduledGraph> GetNotebookScheduledGraphByNotebookGraph(string graphUniqueId, NotebookGraph notebookGraph)
+        {
+            var currentScheduledNotebook = await _scheduleNotebookProvider.GetAsync(scheduledNotebook => scheduledNotebook.GraphUniqueId == graphUniqueId && scheduledNotebook.NotebookNodeId == notebookGraph.NotebookNode.Id);
+            if (currentScheduledNotebook == null)
+            {
+                currentScheduledNotebook = await _scheduleNotebookHistoryProvider.GetAsync(scheduledNotebook => scheduledNotebook.GraphUniqueId == graphUniqueId && scheduledNotebook.NotebookNodeId == notebookGraph.NotebookNode.Id);
+            }
+            var childGraphs = new List<NotebookScheduledGraph>();
+            foreach (var childNodeGraph in notebookGraph.ChildGraphs)
+            {
+                var childGraph = await GetNotebookScheduledGraphByNotebookGraph(graphUniqueId, childNodeGraph);
+                if (childGraph != null && childGraph.ScheduleNotebook != null) 
+                {
+                    childGraphs.Add(childGraph);
+                }
+            }
+            return new NotebookScheduledGraph()
+            {
+                ScheduleNotebook = currentScheduledNotebook,
                 ChildGraphs = childGraphs
             };
         }

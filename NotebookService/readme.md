@@ -28,10 +28,10 @@ Ui running on: https://localhost:2746/
 # Create/submit
 
 `argo template create .\argo\template.yaml`
-`argo submit -n default .\argo\submittable.yaml -p scheduled_notebook_id=65e61f7dd92706945575a3de`
+`argo submit -n default .\argo\submittable.yaml -p scheduled_notebook_id=66123b940263ba0de6361df5`
 
 ARGO NAMESPACE:
 kubectl port-forward -n argo svc/argo-server 2746:2746
 
 argo template -n argo create .\argo\template.yaml
-argo submit -n argo --watch .\argo\submittable.yaml -p scheduled_notebook_id=65f33c8b9e47eaa3a5a05fdb
+argo submit -n argo --watch .\argo\submittable.yaml -p scheduled_notebook_id=66123b940263ba0de6361df5

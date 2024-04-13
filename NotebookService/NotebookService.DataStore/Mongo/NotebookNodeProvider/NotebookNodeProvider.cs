@@ -7,7 +7,7 @@ namespace NotebookService.DataStore.Mongo.NotebookGraphProvider
     public class NotebookNodeProvider : INotebookNodeProvider
     {
         private readonly IMongoDataContext _context;
-        private readonly string _collectionName = "NotebookGraph";
+        private readonly string _collectionName = "NotebookNode";
 
         public NotebookNodeProvider(IMongoDataContext context)
         {

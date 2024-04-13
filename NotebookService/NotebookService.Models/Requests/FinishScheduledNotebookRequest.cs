@@ -6,6 +6,7 @@ namespace NotebookService.Models.Requests
     {
         public string ScheduledNotebookId { get; set; }
         public Status Status { get; set; }
+        public string ErrorMessage { get; set; }
         public IEnumerable<NotebookParameter> OutputParameters { get; set; }
     }
 }

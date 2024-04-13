@@ -207,5 +207,24 @@ namespace NotebookService.WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        /// <summary>
+        /// Get a scheduled graph by id.
+        /// </summary>
+        /// <response code="200">Get a scheduled graph.</response>
+        [HttpGet]
+        [Route("node/scheduled/{uniqueGraphId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<NotebookScheduledGraph>> ScheduleNotebookNodeAsync(string uniqueGraphId)
+        {
+            try
+            {
+                return Ok(await _notebookGraphFacade.GetNotebookScheduledGraphById(uniqueGraphId));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

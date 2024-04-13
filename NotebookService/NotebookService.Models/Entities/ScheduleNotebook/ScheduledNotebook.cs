@@ -1,6 +1,5 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
-using NotebookService.Models.Entities.NotebookGraph;
 
 namespace NotebookService.Models.Entities.ScheduleNotebook
 {
@@ -15,10 +14,12 @@ namespace NotebookService.Models.Entities.ScheduleNotebook
         public DateTime? FinishedAt { get; set; }
         public Progress Progress { get; set; }
         public Status Status { get; set; }
+        public string ErrorMessage { get; set; }
         public IEnumerable<NotebookParameter> InputParameters { get; set; }
         public IEnumerable<NotebookParameterToGenerate> InputParametersToGenerate { get; set; }
         public IEnumerable<NotebookParameter> OutputParameters { get; set; }
         public IEnumerable<string> OutputParametersNames { get; set; }
         public string NotebookNodeId { get; set; }
+        public string GraphUniqueId { get; set; }
     }
 }

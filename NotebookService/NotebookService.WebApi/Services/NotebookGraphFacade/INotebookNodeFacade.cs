@@ -17,5 +17,6 @@ namespace NotebookService.WebApi.Services.NotebookGraphFacade
         Task<ScheduledNotebook> ScheduleNotebookNode(ScheduleNotebookNodeRequest request);
         Task<NotebookGraph> DeleteNotebookGraph(string notebookNodeId);
         Task<NotebookGraph> CreateNotebookGraph(NotebookNodeModel notebookNodeModel, string parentNotebookNodeId = null);
+        Task<NotebookScheduledGraph> GetNotebookScheduledGraphById(string uniqueGraphId);
     }
 }

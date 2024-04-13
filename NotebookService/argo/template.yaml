@@ -31,6 +31,8 @@ spec:
           artifacts:
           - name: input_parameters_to_generate_file_path
             from: "{{steps.first.outputs.artifacts.input_parameters_to_generate_output_file_path}}"
+        when: "{{workflow.outputs.parameters.has_errors}} != True"
+
     - - name: third
         template: run-notebook
         arguments:
@@ -43,6 +45,7 @@ spec:
             from: "{{steps.first.outputs.artifacts.output_parameters_names_output_file_path}}"
           - name: input_parameters_to_generate_output
             from: "{{steps.second.outputs.artifacts.input_parameters_to_generate_output_file_path}}"
+        when: "{{workflow.outputs.parameters.has_errors}} != True"
     - - name: forth
         template: finish-notebook
         arguments:
@@ -54,6 +57,19 @@ spec:
           artifacts:
           - name: output_parameters_file_path
             from: "{{steps.third.outputs.artifacts.output_parameters_output_file_path}}"
+        when : "{{workflow.outputs.parameters.has_errors}} != True"
+    - - name: fifth
+        template: publish-notebook-errors
+        arguments:
+          parameters:
+          - name: notebook_service_url
+            value: http://notebookservice.default.svc.cluster.local:12700
+          - name: scheduled_notebook_id
+            value: "{{workflow.parameters.scheduled_notebook_id}}"
+          artifacts:
+          - name: error_message
+            from: "{{workflow.outputs.artifacts.error_message}}"
+        when: "{{workflow.outputs.parameters.has_errors}} == True"
 
   - name: initialize-notebook
     inputs:
@@ -62,18 +78,31 @@ spec:
       - name: file_service_url
       - name: scheduled_notebook_id
     outputs:
+      parameters:
+      - name: has_errors
+        valueFrom:
+          path: /has_errors.txt
+        globalName: has_errors
       artifacts:
       - name: notebook_output_file_path
+        optional: true
         path: /notebook_output.txt
       - name: input_parameters_output_file_path
+        optional: true
         path: /input_parameters_output.txt
       - name: input_parameters_to_generate_output_file_path
+        optional: true
         path: /input_parameters_to_generate_output.json
       - name: output_parameters_names_output_file_path
+        optional: true
         path: /output_parameters_names.txt
+      - name: error_message
+        optional: true
+        path: /error_message.txt
+        globalName: error_message
     container:
       # run cowsay with that message input parameter as args
-      image: catalibugnar/initialize_notebook@sha256:70802c1b95c1fa64ff89a6a30ee9bb7e47dd51ed85e76b7602e4c58c2000cccb
+      image: catalibugnar/initialize_notebook@sha256:8df4ebad6a60f9b2dd3975d5ee727f1a32612d1aba8d1fefbbdd078613382119
       command: [python3, /app/init_notebook.py]
       args:
       - --notebook_service_url
@@ -90,6 +119,10 @@ spec:
       - "/input_parameters_to_generate_output.json"
       - --output_parameters_names_output_file_path
       - "/output_parameters_names.txt"
+      - --has_errors_output_file_path
+      - "/has_errors.txt"
+      - --error_message_output_file_path
+      - "/error_message.txt"
 
   - name: generate-parameter
     inputs:
@@ -99,12 +132,22 @@ spec:
         - name: input_parameters_to_generate_file_path
           path: /input_parameters_to_generate_output.json
     outputs:
+      parameters:
+      - name: has_errors
+        valueFrom:
+          path: /has_errors.txt
+        globalName: has_errors
       artifacts:
       - name: input_parameters_to_generate_output_file_path
+        optional: true
         path: /generated_output_parameters.json
+      - name: error_message
+        optional: true
+        path: /error_message.txt
+        globalName: error_message
     container:
       # run cowsay with that message input parameter as args
-      image: catalibugnar/generate_parameter@sha256:e125bc24bba22391b9eedfd44558724ff6949b9058e8bc8bffac1d5cf3ce3e39
+      image: catalibugnar/generate_parameter@sha256:169478bfda700e0d7e489058b4c58e1984175ba61b7f8238cfd401462113c985
       command: [python3, /app/generate_parameter.py]
       args:
       - --generator_service_url
@@ -113,6 +156,10 @@ spec:
       - "/input_parameters_to_generate_output.json"
       - --input_parameters_to_generate_output_file_path
       - "/generated_output_parameters.json"
+      - --has_errors_output_file_path
+      - "/has_errors.txt"
+      - --error_message_output_file_path
+      - "/error_message.txt"
 
   - name: run-notebook
     inputs:
@@ -126,12 +173,22 @@ spec:
         - name: output_parameters_file_path
           path: /output_parameters_names.txt
     outputs:
+      parameters:
+      - name: has_errors
+        valueFrom:
+          path: /has_errors.txt
+        globalName: has_errors
       artifacts:
       - name: output_parameters_output_file_path
+        optional: true
         path: /output_parameters_output.txt
+      - name: error_message
+        optional: true
+        path: /error_message.txt
+        globalName: error_message
     container:
       # run cowsay with that message input parameter as args
-      image: catalibugnar/run_notebook@sha256:d8169d86083de518190c2fe496268542eda8e34af88537c175f5c7d20c36efdd
+      image: catalibugnar/run_notebook@sha256:8e8f6c13cfc14649a6ef6cbea836fe087b5b2b13a75b1da251a9463b611e3e0a
       command: [python3, /app/run_notebook.py]
       args:
       - --notebook_input_path
@@ -144,6 +201,10 @@ spec:
       - "/output_parameters_names.txt"
       - --output_parameters_output_file_path
       - "/output_parameters_output.txt"
+      - --has_errors_output_file_path
+      - "/has_errors.txt"
+      - --error_message_output_file_path
+      - "/error_message.txt"
 
   - name: finish-notebook
     inputs:
@@ -153,9 +214,20 @@ spec:
       artifacts:
       - name: output_parameters_file_path
         path: /output_parameters_file_path.txt
+    outputs:
+      parameters:
+      - name: has_errors
+        valueFrom:
+          path: /has_errors.txt
+        globalName: has_errors
+      artifacts:
+      - name: error_message
+        optional: true
+        path: /error_message.txt
+        globalName: error_message
     container:
       # run cowsay with that message input parameter as args
-      image: catalibugnar/finish_notebook@sha256:1f3ae90fbb2c23f0ec33c260fb0ecdaa4cc2cd2f9e375859b9d23b2a2766955f
+      image: catalibugnar/finish_notebook@sha256:eced81842b76f3e1de8ffbfcd110f9d7817484f923d19f6c28d3516d7ddb727b
       command: [python3, /app/finish_notebook.py]
       args:
       - --notebook_service_url
@@ -164,3 +236,27 @@ spec:
       - "{{inputs.parameters.scheduled_notebook_id}}"
       - --output_parameters_file_path
       - "/output_parameters_file_path.txt"
+      - --has_errors_output_file_path
+      - "/has_errors.txt"
+      - --error_message_output_file_path
+      - "/error_message.txt"
+
+  - name: publish-notebook-errors
+    inputs:
+      parameters:
+      - name: notebook_service_url
+      - name: scheduled_notebook_id
+      artifacts:
+      - name: error_message
+        path: /error_message.txt
+    container:
+      # run cowsay with that message input parameter as args
+      image: catalibugnar/publish_notebook_errors
+      command: [python3, /app/publish_notebook_errors.py]
+      args:
+      - --notebook_service_url
+      - "{{inputs.parameters.notebook_service_url}}"
+      - --scheduled_notebook_id
+      - "{{inputs.parameters.scheduled_notebook_id}}"
+      - --error_message_file_path
+      - "/error_message.txt"

@@ -71,21 +71,41 @@ def get_input_generated_parameter_in_locals(
 @click.option("--output_parameters_file_path", type=click.STRING)
 # Output parameters
 @click.option("--output_parameters_output_file_path", type=click.STRING)
+@click.option(
+    "--has_errors_output_file_path",
+    type=click.STRING,
+)
+@click.option(
+    "--error_message_output_file_path",
+    type=click.STRING,
+)
 def run_notebook(
     notebook_input_path: str,
     input_parameters_file_path: str,
     input_parameters_to_generate_output: str,
     output_parameters_file_path: str,
     output_parameters_output_file_path: str,
+    has_errors_output_file_path: str,
+    error_message_output_file_path: str,
 ):
-    globals, locals = {}, {}
-    get_input_parameter_in_locals(input_parameters_file_path, locals)
-    get_input_generated_parameter_in_locals(input_parameters_to_generate_output, locals)
-    execute_notebook_with_globals_and_locals(notebook_input_path, globals, locals)
-    output_parameters = get_all_output_parameters(output_parameters_file_path, locals)
-    write_output_parameters_to_file(
-        output_parameters, output_parameters_output_file_path
-    )
+    has_error = False
+    try:
+        globals, locals = {}, {}
+        get_input_parameter_in_locals(input_parameters_file_path, locals)
+        get_input_generated_parameter_in_locals(input_parameters_to_generate_output, locals)
+        execute_notebook_with_globals_and_locals(notebook_input_path, globals, locals)
+        output_parameters = get_all_output_parameters(output_parameters_file_path, locals)
+        write_output_parameters_to_file(
+            output_parameters, output_parameters_output_file_path
+        )
+    except Exception as ex:
+        has_error = True
+        with open(error_message_output_file_path, "w") as file:
+            file.write(str(ex))
+    finally:
+        with open(has_errors_output_file_path, "w") as file:
+            file.write(str(has_error))
+
 
 
 if __name__ == "__main__":

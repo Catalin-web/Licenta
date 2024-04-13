@@ -1,4 +1,5 @@
-﻿using NotebookService.Models.Entities.ScheduleNotebook;
+﻿using NotebookService.Models.Entities.NotebookGraph;
+using NotebookService.Models.Entities.ScheduleNotebook;
 using NotebookService.Models.Requests;
 
 namespace NotebookService.WebApi.Services.ScheduleNotebookFacade

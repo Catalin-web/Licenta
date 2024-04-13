@@ -3,15 +3,17 @@
 import { useEffect, useState } from 'react';
 import { OpenSourceModel } from '../../services/GeneratorService/GeneratorServiceModels';
 import { GeneratorService } from '../../services/GeneratorService/GeneratorService';
+import PullModelDialog from './PullModelDialog';
 import {
 	Button,
-	Col,
-	Container,
-	Form,
-	Row,
-	Table,
-} from 'react-bootstrap';
-import PullModelDialog from './PullModelDialog';
+	Grid,
+	IconButton,
+	MenuItem,
+	Select,
+} from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import AddIcon from '@mui/icons-material/Add';
 
 function OpenSourceModelsPage() {
 	const [showPullDialog, setShowPullDialog] = useState(false);
@@ -27,12 +29,16 @@ function OpenSourceModelsPage() {
 		};
 		fetchData();
 	}, []);
+	const refreshData = async () => {
+		let generatorService = new GeneratorService();
+		let data = await generatorService.getOpenSourceModelsAsync();
+		setModels(data);
+	};
 	// Refresh rate
 	useEffect(() => {
+		if (refreshRateSeconds === 0) return;
 		const interval = setInterval(async () => {
-			let generatorService = new GeneratorService();
-			let data = await generatorService.getOpenSourceModelsAsync();
-			setModels(data);
+			await refreshData();
 		}, refreshRateSeconds * 1000);
 		return () => clearInterval(interval);
 	}, [refreshRateSeconds]);
@@ -45,56 +51,60 @@ function OpenSourceModelsPage() {
 				show={showPullDialog}
 				setShow={setShowPullDialog}
 			/>
-			<Container fluid className='mt-4'>
-				<Row>
-					<Col className='col-1'></Col>
-					<Col className='col-2'>
-						<Button onClick={handlePull}>Pull new model</Button>
-					</Col>
-					<Col className='col-5'></Col>
-					<Col className='col-2'>
-						<Form>
-							<Form.Label>Refresh:</Form.Label>
-							<Form.Select
-								onChange={(e) =>
-									setRefreshRateSeconds(Number(e.target.value))
-								}>
-								<option value='10'>10</option>
-								<option value='5'>5</option>
-								<option value='3'>3</option>
-							</Form.Select>
-						</Form>
-					</Col>
-					<Col className='col-1'></Col>
-				</Row>
-				<Row>
-					<Col className='col-1'></Col>
-					<Col className='col-9'>
-						<Table>
-							<thead>
-								<tr>
-									<th>#</th>
-									<th>Name</th>
-									<th>Model</th>
-									<th>Size</th>
-									<th>Digest</th>
-								</tr>
-							</thead>
-							<tbody>
-								{models.map((model, index) => (
-									<tr key={model.name}>
-										<td>{index + 1}</td>
-										<td>{model.name}</td>
-										<td>{model.model}</td>
-										<td>{model.size}</td>
-										<td>{model.digest}</td>
-									</tr>
-								))}
-							</tbody>
-						</Table>
-					</Col>
-				</Row>
-			</Container>
+			<Grid
+				container
+				spacing={2}
+				direction='row'
+				justifyContent='space-around'
+				alignItems='center'>
+				<Grid item xs={12}></Grid>
+				<Grid item xs={1}></Grid>
+				<Grid item xs={4}>
+					<Button onClick={handlePull}>
+						<AddIcon />
+						Pull new model
+					</Button>
+				</Grid>
+				<Grid item xs={4}></Grid>
+				<Grid item xs={2}>
+					<Select
+						defaultValue={0}
+						onChange={(e) => setRefreshRateSeconds(Number(e.target.value))}>
+						<MenuItem value={10}>10</MenuItem>
+						<MenuItem value={5}>5</MenuItem>
+						<MenuItem value={3}>3</MenuItem>
+						<MenuItem value={0}>Manual</MenuItem>
+					</Select>
+					<IconButton onClick={refreshData}>
+						<RefreshIcon />
+					</IconButton>
+				</Grid>
+				<Grid item xs={1}></Grid>
+				<Grid item xs={1}></Grid>
+				<Grid item xs={9}>
+					<DataGrid
+						initialState={{
+							pagination: {
+								paginationModel: {
+									pageSize: 10,
+								},
+							},
+						}}
+						pageSizeOptions={[10]}
+						rows={models}
+						columns={[
+							{ field: 'name', headerName: 'Name', flex: 1 },
+							{ field: 'model', headerName: 'Model', flex: 1 },
+							{ field: 'size', headerName: 'Size', flex: 1 },
+							{ field: 'digest', headerName: 'Digest', flex: 1 },
+						]}
+						getRowId={(row: OpenSourceModel) => row.model + row.name}
+						checkboxSelection
+						disableRowSelectionOnClick
+					/>
+				</Grid>
+				<Grid item xs={2}></Grid>
+			</Grid>
 		</>
 	);
 }
