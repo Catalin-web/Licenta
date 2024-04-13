@@ -7,9 +7,13 @@ import MyNavbar from './header/MyNavbar';
 import OpenSourceModelsPage from './pages/OpenSourceModels/OpenSourceModelsPage';
 import JobsPage from './pages/Jobs/JobsPage';
 import ScheduleNotebookPage from './pages/ScheduledNotebook/ScheduleNotebookPage';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
+
 function App() {
 	return (
 		<>
+			<ToastContainer />
 			<MyNavbar></MyNavbar>
 			<BrowserRouter>
 				<Routes>

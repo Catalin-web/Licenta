@@ -30,7 +30,7 @@ function NotebookParameterGrid(props: {
 						{ field: 'name', headerName: 'Name', flex: 1 },
 						{ field: 'value', headerName: 'Value', flex: 1 },
 					]}
-					getRowId={(row: NotebookParameter) => row.name + row.value}
+					getRowId={(row: NotebookParameter) => row.name}
 					checkboxSelection
 					disableRowSelectionOnClick
 				/>

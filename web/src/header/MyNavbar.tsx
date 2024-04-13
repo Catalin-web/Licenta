@@ -7,42 +7,27 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import {
-	Avatar,
 	Box,
 	Container,
 	Divider,
 	Link,
 	Menu,
 	MenuItem,
-	Tooltip,
 } from '@mui/material';
 import { useState } from 'react';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 /** @format */
 function MyNavbar() {
 	const [isOpenBigMenu, setIsOpenBigMenu] = useState<boolean>(false);
-	const [isOpenNotebookMenu, setIsOpenNotebookMenu] =
-		useState<boolean>(false);
 	const [anchorElBigMenu, setAnchorElBigMenu] = useState<Element>();
-	const [anchorElNotebookMenu, setAnchorElNotebookMenu] =
-		useState<Element>();
 
 	const handleOpenBigMenu = (event: any) => {
 		setIsOpenBigMenu(true);
 		setAnchorElBigMenu(event.currentTarget);
 	};
-	const handleOpenNotebookMenu = (event: any) => {
-		setIsOpenNotebookMenu(true);
-		setAnchorElNotebookMenu(event.currentTarget);
-	};
 
 	const handleCloseBigMenu = () => {
 		setIsOpenBigMenu(false);
 		setAnchorElBigMenu(undefined);
-	};
-	const handleCloseNotebookMenu = () => {
-		setIsOpenNotebookMenu(false);
-		setAnchorElNotebookMenu(undefined);
 	};
 
 	return (
@@ -94,13 +79,10 @@ function MyNavbar() {
 						</Button>
 						<Button
 							key='Notebooks'
-							onClick={(e) => {
-								handleOpenNotebookMenu(e);
-								handleOpenNotebookMenu(e);
-							}}
+							onClick={handleCloseBigMenu}
+							href='/scheduledNotebooks'
 							sx={{ my: 2, color: 'white', display: 'block' }}>
 							Notebooks
-							<ArrowDropDownIcon />
 						</Button>
 					</Box>
 					<Box sx={{ flexGrow: 0 }}>
@@ -128,62 +110,13 @@ function MyNavbar() {
 								Jobs
 							</MenuItem>
 							<Divider />
-							<MenuItem component={Link} onClick={handleCloseBigMenu}>
-								Create notebook
-							</MenuItem>
 							<MenuItem
 								href='/scheduledNotebooks'
 								component={Link}
 								onClick={handleCloseBigMenu}>
-								Scheduled notebooks
-							</MenuItem>
-							<MenuItem
-								component={Link}
-								href='/scheduledNotebooks'
-								onClick={handleCloseBigMenu}>
-								Scheduled notebooks
-							</MenuItem>
-							<MenuItem component={Link} onClick={handleCloseBigMenu}>
-								Scheduled notebooks history
-							</MenuItem>
-							<MenuItem component={Link} onClick={handleCloseBigMenu}>
-								Define notebook graph
-							</MenuItem>
-							<MenuItem component={Link} onClick={handleCloseBigMenu}>
-								Trigger notebook graph
+								Notebooks
 							</MenuItem>
 						</Menu>
-					</Box>
-					<Box sx={{ flexGrow: 0 }}>
-						<Menu
-							id='notebook-menu'
-							anchorEl={anchorElNotebookMenu}
-							open={isOpenNotebookMenu}
-							onClose={handleCloseNotebookMenu}>
-							<MenuItem component={Link} onClick={handleCloseNotebookMenu}>
-								Create notebook
-							</MenuItem>
-							<MenuItem
-								href='/scheduledNotebooks'
-								component={Link}
-								onClick={handleCloseNotebookMenu}>
-								Scheduled notebooks
-							</MenuItem>
-							<MenuItem component={Link} onClick={handleCloseNotebookMenu}>
-								Scheduled notebooks history
-							</MenuItem>
-							<MenuItem component={Link} onClick={handleCloseNotebookMenu}>
-								Define notebook graph
-							</MenuItem>
-							<MenuItem component={Link} onClick={handleCloseNotebookMenu}>
-								Trigger notebook graph
-							</MenuItem>
-						</Menu>
-						<Tooltip title='Open settings'>
-							<IconButton onClick={handleOpenNotebookMenu} sx={{ p: 0 }}>
-								<Avatar alt='Remy Sharp' src='/static/images/avatar/2.jpg' />
-							</IconButton>
-						</Tooltip>
 					</Box>
 					<Box sx={{ flexGrow: 0, display: { xs: 'none', md: 'flex' } }}>
 						<Button color='inherit'>Login</Button>

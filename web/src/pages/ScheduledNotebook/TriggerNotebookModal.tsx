@@ -1,21 +1,26 @@
 /** @format */
 import {
-	Alert,
 	Box,
+	Button,
 	Grid,
 	MenuItem,
 	Modal,
 	Select,
 	Typography,
 } from '@mui/material';
-import { ScheduledNotebook } from '../../services/NotebookService/NotebookServiceModels';
-import NotebookParameterGrid from './Grids/NotebookParameterGrid';
-import NotebookParametersToGenerateGrid from './Grids/NotebookParametersToGenerateGrid';
-import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
-import { Status } from '../../services/GeneratorService/GeneratorServiceModels';
+import {
+	NotebookParameter,
+	NotebookParameterToGenerate,
+	OutputParameterName,
+	ScheduleNotebookRequest,
+} from '../../services/NotebookService/NotebookServiceModels';
 import { useEffect, useState } from 'react';
 import { NotebookFile } from '../../services/FileService/FileServiceModels';
 import { FileService } from '../../services/FileService/FileService';
+import NotebookParameterEditableGrid from './Grids/NotebookParameterEditableGrid';
+import NotebookParameterToGenerateEditableGrid from './Grids/NotebookParametersToGenerateEditableGrid';
+import OutputParameterNamesEditableGrid from './Grids/OutputParameterNamesEditableGrid';
+import { NotebookService } from '../../services/NotebookService/NotebookService';
 const style = {
 	position: 'absolute',
 	top: '50%',
@@ -32,10 +37,14 @@ function ScheduleNotebookModal(props: {
 	setShow: (show: boolean) => void;
 }) {
 	const handleClose = () => props.setShow(false);
-	const [inputParameters, setInputParameters] = useState([]);
-	const [outputParameters, setOutputParameters] = useState([]);
+	const [inputParameters, setInputParameters] = useState<
+		NotebookParameter[]
+	>([]);
 	const [inputParametersToGenerate, setInputParametersToGenerate] =
-		useState([]);
+		useState<NotebookParameterToGenerate[]>([]);
+	const [outputParameters, setOutputParameters] = useState<
+		OutputParameterName[]
+	>([]);
 	const [notebookFiles, setNotebookFiles] = useState<NotebookFile[]>(
 		[],
 	);
@@ -53,7 +62,24 @@ function ScheduleNotebookModal(props: {
 		};
 		fetchData();
 	}, []);
-
+	const handleSchedule = async () => {
+		let notebookService = new NotebookService();
+		let scheduleNotebookRequest: ScheduleNotebookRequest = {
+			notebookName: selectedNotebookName ?? '',
+			inputParameters: inputParameters,
+			inputParametersToGenerate: inputParametersToGenerate,
+			outputParametersNames: outputParameters.map(
+				(outputParameter) => outputParameter.name,
+			),
+		};
+		await notebookService.scheduleNotebookAsync(
+			scheduleNotebookRequest,
+		);
+		props.setShow(false);
+		setInputParameters([]);
+		setInputParametersToGenerate([]);
+		setOutputParameters([]);
+	};
 	return (
 		<Modal
 			open={props.show}
@@ -85,18 +111,27 @@ function ScheduleNotebookModal(props: {
 						</Select>
 					</Grid>
 					<Grid item xs={1}></Grid>
-					<NotebookParameterGrid
+					<NotebookParameterEditableGrid
 						notebookParameters={inputParameters}
+						setNotebookParameters={setInputParameters}
 						gridName='Input Parameters'
 					/>
-					<NotebookParametersToGenerateGrid
-						notebookParametersToGenerate={inputParametersToGenerate}
+					<NotebookParameterToGenerateEditableGrid
+						notebookParameters={inputParametersToGenerate}
+						setNotebookParameters={setInputParametersToGenerate}
 						gridName='Parameters to Generate'
 					/>
-					<NotebookParameterGrid
-						notebookParameters={outputParameters}
+					<OutputParameterNamesEditableGrid
+						outputParameterNames={outputParameters}
+						setOutputParameterNames={setOutputParameters}
 						gridName='Output Parameters'
 					/>
+					<Grid item xs={1}></Grid>
+					<Grid item xs={10}>
+						<Button variant='contained' onClick={handleSchedule}>
+							Schedule
+						</Button>
+					</Grid>
 				</Grid>
 			</Box>
 		</Modal>

@@ -2,7 +2,10 @@
 
 import axios from 'axios';
 import { Settings } from '../Settings';
-import { ScheduledNotebook } from './NotebookServiceModels';
+import {
+	ScheduleNotebookRequest,
+	ScheduledNotebook,
+} from './NotebookServiceModels';
 
 export class NotebookService {
 	private readonly baseUrl: string;
@@ -25,5 +28,14 @@ export class NotebookService {
 			`${this.baseUrl}/notebookService/scheduleNotebook/history`,
 		);
 		return response.data;
+	}
+
+	public async scheduleNotebookAsync(
+		scheduleNotebookRequest: ScheduleNotebookRequest,
+	): Promise<void> {
+		await axios.post(
+			`${this.baseUrl}/notebookService/scheduleNotebook/schedule`,
+			scheduleNotebookRequest,
+		);
 	}
 }

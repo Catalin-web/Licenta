@@ -16,6 +16,8 @@ import ScheduleNotebookDetailModal from './ScheduleNotebookDetailModal';
 import ScheduledNotebookGraphDetailModal from './ScheduledNotebookGraphDetailModal';
 import ScheduleNotebookModal from './TriggerNotebookModal';
 import ScheduleIcon from '@mui/icons-material/Schedule';
+import ScatterPlotIcon from '@mui/icons-material/ScatterPlot';
+import ScheduleNotebookGraphModal from './TriggerNotebookGraphModal';
 
 function ScheduleNotebookPage() {
 	let [currentlyScheduledNotebooks, setCurrentlyScheduledNotebooks] =
@@ -61,6 +63,12 @@ function ScheduleNotebookPage() {
 		setShowTriggerNotebookModal(true);
 	};
 
+	const [showTriggerGraph, setShowTriggerGraph] = useState(false);
+
+	const handleOpenTriggerGraph = () => {
+		setShowTriggerGraph(true);
+	};
+
 	return (
 		<>
 			<ScheduleNotebookDetailModal
@@ -77,6 +85,10 @@ function ScheduleNotebookPage() {
 				show={showTriggerNotebookModal}
 				setShow={setShowTriggerNotebookModal}
 			/>
+			<ScheduleNotebookGraphModal
+				show={showTriggerGraph}
+				setShow={setShowTriggerGraph}
+			/>
 			<Grid
 				container
 				spacing={2}
@@ -92,7 +104,14 @@ function ScheduleNotebookPage() {
 						</Tooltip>
 					</IconButton>
 				</Grid>
-				<Grid item xs={3}></Grid>
+				<Grid item xs={1}>
+					<IconButton onClick={handleOpenTriggerGraph}>
+						<Tooltip title='Schedule a new graph'>
+							<ScatterPlotIcon />
+						</Tooltip>
+					</IconButton>
+				</Grid>
+				<Grid item xs={2}></Grid>
 				<Grid item xs={4}></Grid>
 				<Grid item xs={2}>
 					<Select

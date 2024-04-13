@@ -2,7 +2,12 @@
 
 import axios from 'axios';
 import { Settings } from '../Settings';
-import { NotebookGraph, NotebookNode, NotebookScheduledGraph } from './NotebookServiceModels';
+import {
+	NotebookGraph,
+	NotebookNode,
+	NotebookScheduledGraph,
+	ScheduleNotebookNodeRequest,
+} from './NotebookServiceModels';
 
 export class GraphService {
 	private readonly baseUrl: string;
@@ -28,6 +33,13 @@ export class GraphService {
 		return response.data;
 	}
 
+	public async getStartingNotebookNodes(): Promise<NotebookNode[]> {
+		let response = await axios.get<NotebookNode[]>(
+			`${this.baseUrl}/notebookService/notebookGraph/node/graph`,
+		);
+		return response.data;
+	}
+
 	public async getNotebookScheduledGraphById(
 		graphUniqueId: string,
 	): Promise<NotebookScheduledGraph> {
@@ -35,5 +47,22 @@ export class GraphService {
 			`${this.baseUrl}/notebookService/notebookGraph/node/scheduled/${graphUniqueId}`,
 		);
 		return response.data;
+	}
+
+	public async scheduleNoteookGraph(
+		scheduleNotebookGraphRequest: ScheduleNotebookNodeRequest,
+	): Promise<void> {
+		await axios.post(
+			`${this.baseUrl}/notebookService/notebookGraph/schedule`,
+			scheduleNotebookGraphRequest,
+		);
+	}
+
+	public async deleteNotebookNodeById(
+		startingNodeId: string,
+	): Promise<void> {
+		await axios.delete(
+			`${this.baseUrl}/notebookService/notebookGraph/node/graph/${startingNodeId}`,
+		);
 	}
 }

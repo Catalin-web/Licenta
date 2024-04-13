@@ -93,3 +93,18 @@ export interface NodeScheduledData {
 	scheduledNotebook: ScheduledNotebook | undefined;
 	notebookNode: NotebookNode | undefined;
 }
+
+export interface OutputParameterName {
+	name: string;
+}
+
+export interface ScheduleNotebookRequest {
+	notebookName: string;
+	inputParameters: NotebookParameter[];
+	inputParametersToGenerate: NotebookParameterToGenerate[];
+	outputParametersNames: string[];
+}
+
+export interface ScheduleNotebookNodeRequest {
+	notebookNodeId: string;
+}
