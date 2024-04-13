@@ -19,26 +19,26 @@ namespace Fileservice.DataStore.Mongo.NotebookDataProvider
 
         protected IMongoCollection<Notebook> Collection => _context.Database.GetCollection<Notebook>(_collectionName);
 
-        public async Task InsertOrUpdateAsync(Notebook notebook)
+        public async Task InsertOrUpdateAsync(Notebook notebookToInsert)
         {
-            var alreadyExistingItem = await GetAsync(notebook => notebook.NotebookName == notebook.NotebookName && notebook.BucketName == notebook.BucketName);
+            var alreadyExistingItem = await GetAsync(notebook => notebook.NotebookName == notebookToInsert.NotebookName && notebook.BucketName == notebookToInsert.BucketName);
             if (alreadyExistingItem != null)
             {
-                await UpdateAsync(notebook => notebook.NotebookName == notebook.NotebookName && notebook.BucketName == notebook.BucketName, notebook);
+                await UpdateAsync(notebook => notebook.NotebookName == notebook.NotebookName && notebook.BucketName == notebook.BucketName, notebookToInsert);
             }
             else
             {
-                await Collection.InsertOneAsync(notebook);
+                await Collection.InsertOneAsync(notebookToInsert);
             }
         }
 
-        public async Task UpdateAsync(Expression<Func<Notebook, bool>> match, Notebook notebook)
+        public async Task UpdateAsync(Expression<Func<Notebook, bool>> match, Notebook notebookToUpdate)
         {
-            var alreadyExistingItem = await GetAsync(notebook => notebook.NotebookName == notebook.NotebookName && notebook.BucketName == notebook.BucketName);
+            var alreadyExistingItem = await GetAsync(notebook => notebook.NotebookName == notebookToUpdate.NotebookName && notebook.BucketName == notebookToUpdate.BucketName);
             if (alreadyExistingItem != null)
             {
-                notebook.Id = alreadyExistingItem.Id;
-                await Collection.ReplaceOneAsync(match, notebook);
+                notebookToUpdate.Id = alreadyExistingItem.Id;
+                await Collection.ReplaceOneAsync(match, notebookToUpdate);
             }
         }
 
