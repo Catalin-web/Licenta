@@ -2,22 +2,36 @@
 
 import { useEffect, useState } from 'react';
 import {
+	Button,
+	Card,
+	CardContent,
 	Grid,
 	IconButton,
+	List,
+	ListItem,
+	ListItemAvatar,
+	ListItemText,
 	MenuItem,
 	Select,
 	Tooltip,
+	Typography,
 } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { NotebookService } from '../../services/NotebookService/NotebookService';
-import { ScheduledNotebook } from '../../services/NotebookService/NotebookServiceModels';
+import {
+	NotebookGraphStatisticsResponse,
+	ScheduledNotebook,
+	ScheduledNotebookStatisticsResponse,
+} from '../../services/NotebookService/NotebookServiceModels';
 import ScheduledNotebooksGrid from './Grids/ScheduledNotebooksGrid';
 import ScheduleNotebookDetailModal from './ScheduleNotebookDetailModal';
 import ScheduledNotebookGraphDetailModal from './ScheduledNotebookGraphDetailModal';
 import ScheduleNotebookModal from './TriggerNotebookModal';
-import ScheduleIcon from '@mui/icons-material/Schedule';
-import ScatterPlotIcon from '@mui/icons-material/ScatterPlot';
 import ScheduleNotebookGraphModal from './TriggerNotebookGraphModal';
+import { GraphService } from '../../services/NotebookService/GraphService';
+import AccessAlarmsIcon from '@mui/icons-material/AccessAlarms';
+import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
+import DoneIcon from '@mui/icons-material/Done';
 
 function ScheduleNotebookPage() {
 	let [currentlyScheduledNotebooks, setCurrentlyScheduledNotebooks] =
@@ -26,15 +40,22 @@ function ScheduleNotebookPage() {
 		useState<ScheduledNotebook[]>([]);
 	let [refreshRateSeconds, setRefreshRateSeconds] =
 		useState<number>(10);
+	let [notebookStatistics, setNotebookStatistics] =
+		useState<ScheduledNotebookStatisticsResponse>();
+	let [graphStatistics, setGraphStatistics] =
+		useState<NotebookGraphStatisticsResponse>();
 
 	const refreshData = async () => {
 		let notebookService = new NotebookService();
+		let graphService = new GraphService();
 		let scheduledNotebooks =
 			await notebookService.getScheduledNotebooksAsync();
 		setCurrentlyScheduledNotebooks(scheduledNotebooks);
 		let completedScheduledNotebooks =
 			await notebookService.getScheduledNotebooksHistoryAsync();
 		setCompletedScheduledNotebooks(completedScheduledNotebooks);
+		setNotebookStatistics(await notebookService.getStatisticsAsync());
+		setGraphStatistics(await graphService.getStatisticsAsync());
 	};
 	useEffect(() => {
 		refreshData();
@@ -97,19 +118,121 @@ function ScheduleNotebookPage() {
 				alignItems='center'>
 				<Grid item xs={12}></Grid>
 				<Grid item xs={1}></Grid>
+				<Grid item xs={5}>
+					{notebookStatistics && (
+						<Card>
+							<CardContent>
+								<Typography variant='h5'>Notebook Statistics</Typography>
+								<List
+									sx={{
+										width: '100%',
+										maxWidth: 360,
+										bgcolor: 'background.paper',
+									}}>
+									<ListItem>
+										<ListItemAvatar>
+											<Tooltip title='Total notebooks created'>
+												<AccessAlarmsIcon color='info' />
+											</Tooltip>
+										</ListItemAvatar>
+										<ListItemText
+											primary='Running notebooks'
+											secondary={
+												notebookStatistics.numberOfCreatedNotebooks +
+												notebookStatistics.numberOfQueuedNotebooks +
+												notebookStatistics.numberOfInProgressNotebooks
+											}
+										/>
+									</ListItem>
+									<ListItem>
+										<ListItemAvatar>
+											<Tooltip title='Notebooks with errors'>
+												<PriorityHighIcon color={'error'} />
+											</Tooltip>
+										</ListItemAvatar>
+										<ListItemText
+											primary='Failed notebooks'
+											secondary={notebookStatistics.numberOfFailedNotebooks}
+										/>
+									</ListItem>
+									<ListItem>
+										<ListItemAvatar>
+											<Tooltip title='Notebooks that succeded'>
+												<DoneIcon color='success' />
+											</Tooltip>
+										</ListItemAvatar>
+										<ListItemText
+											primary='Succeded notebooks'
+											secondary={notebookStatistics.numberOfSuccedeNotebooks}
+										/>
+									</ListItem>
+								</List>
+							</CardContent>
+						</Card>
+					)}
+				</Grid>
+				<Grid item xs={5}>
+					{graphStatistics && (
+						<Card>
+							<CardContent>
+								<Typography variant='h5'>Graph Statistics</Typography>
+								<List
+									sx={{
+										width: '100%',
+										maxWidth: 360,
+										bgcolor: 'background.paper',
+									}}>
+									<ListItem>
+										<ListItemAvatar>
+											<Tooltip title='Total graphs created'>
+												<AccessAlarmsIcon color='info' />
+											</Tooltip>
+										</ListItemAvatar>
+										<ListItemText
+											primary='Running graphs'
+											secondary={graphStatistics.numberOfInprogressGraphs}
+										/>
+									</ListItem>
+									<ListItem>
+										<ListItemAvatar>
+											<Tooltip title='Graphs with errors'>
+												<PriorityHighIcon color={'error'} />
+											</Tooltip>
+										</ListItemAvatar>
+										<ListItemText
+											primary='Failed graphs'
+											secondary={graphStatistics.numberOfFailedGraphs}
+										/>
+									</ListItem>
+									<ListItem>
+										<ListItemAvatar>
+											<Tooltip title='Graphs that succeded'>
+												<DoneIcon color='success' />
+											</Tooltip>
+										</ListItemAvatar>
+										<ListItemText
+											primary='Succeded graphs'
+											secondary={graphStatistics.numberOfSuccededGraphs}
+										/>
+									</ListItem>
+								</List>
+							</CardContent>
+						</Card>
+					)}
+				</Grid>
+				<Grid item xs={1}></Grid>
+				<Grid item xs={1}></Grid>
 				<Grid item xs={1}>
-					<IconButton onClick={handleOpenTriggerNotebookModal}>
-						<Tooltip title='Schedule a new notebook'>
-							<ScheduleIcon />
-						</Tooltip>
-					</IconButton>
+					<Button
+						onClick={handleOpenTriggerNotebookModal}
+						variant='contained'>
+						Schedule notebook
+					</Button>
 				</Grid>
 				<Grid item xs={1}>
-					<IconButton onClick={handleOpenTriggerGraph}>
-						<Tooltip title='Schedule a new graph'>
-							<ScatterPlotIcon />
-						</Tooltip>
-					</IconButton>
+					<Button onClick={handleOpenTriggerGraph} variant='contained'>
+						Schedule graph
+					</Button>
 				</Grid>
 				<Grid item xs={2}></Grid>
 				<Grid item xs={4}></Grid>

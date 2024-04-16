@@ -10,17 +10,17 @@ function StatusToolTip(props: { status: Status }) {
 		<>
 			{props.status === Status.FAILED && (
 				<Tooltip title='Failed'>
-					<PriorityHighIcon />
+					<PriorityHighIcon color={'error'} />
 				</Tooltip>
 			)}
 			{props.status === Status.NONE && (
 				<Tooltip title='None'>
-					<AccessAlarmIcon />
+					<AccessAlarmIcon color={'info'} />
 				</Tooltip>
 			)}
 			{props.status === Status.SUCCEDED && (
 				<Tooltip title='Succeded'>
-					<DoneIcon />
+					<DoneIcon color='success' />
 				</Tooltip>
 			)}
 		</>

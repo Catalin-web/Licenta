@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Settings } from '../Settings';
 import {
 	NotebookGraph,
+	NotebookGraphStatisticsResponse,
 	NotebookNode,
 	NotebookScheduledGraph,
 	ScheduleNotebookNodeRequest,
@@ -64,5 +65,12 @@ export class GraphService {
 		await axios.delete(
 			`${this.baseUrl}/notebookService/notebookGraph/node/graph/${startingNodeId}`,
 		);
+	}
+
+	public async getStatisticsAsync(): Promise<NotebookGraphStatisticsResponse> {
+		let response = await axios.get<NotebookGraphStatisticsResponse>(
+			`${this.baseUrl}/notebookService/notebookGraph/statistics`,
+		);
+		return response.data;
 	}
 }

@@ -3,6 +3,7 @@ using NotebookService.Models.Entities.NotebookGraph;
 using NotebookService.Models.Entities.ScheduleNotebook;
 using NotebookService.Models.Requests.NotebookGraph;
 using NotebookService.Models.Responses.NotebookGraph;
+using NotebookService.Models.Responses.Statistics;
 using NotebookService.WebApi.Services.NotebookGraphFacade;
 
 namespace NotebookService.WebApi.Controllers
@@ -224,6 +225,25 @@ namespace NotebookService.WebApi.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Get statistics of all scheduled notebooks
+        /// </summary>
+        /// <response code="200">Get statistics of all scheduled notebooks.</response>
+        [HttpGet]
+        [Route("statistics")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<NotebookGraphStatisticsResponse>> GetNotebookGraphStatistics()
+        {
+            try
+            {
+                return Ok(await _notebookGraphFacade.GetNotebookGraphStatistics());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
             }
         }
     }

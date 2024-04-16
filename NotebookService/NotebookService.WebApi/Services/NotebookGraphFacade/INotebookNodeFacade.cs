@@ -2,6 +2,7 @@
 using NotebookService.Models.Entities.ScheduleNotebook;
 using NotebookService.Models.Requests.NotebookGraph;
 using NotebookService.Models.Responses.NotebookGraph;
+using NotebookService.Models.Responses.Statistics;
 
 namespace NotebookService.WebApi.Services.NotebookGraphFacade
 {
@@ -18,5 +19,6 @@ namespace NotebookService.WebApi.Services.NotebookGraphFacade
         Task<NotebookGraph> DeleteNotebookGraph(string notebookNodeId);
         Task<NotebookGraph> CreateNotebookGraph(NotebookNodeModel notebookNodeModel, string parentNotebookNodeId = null);
         Task<NotebookScheduledGraph> GetNotebookScheduledGraphById(string uniqueGraphId);
+        Task<NotebookGraphStatisticsResponse> GetNotebookGraphStatistics();
     }
 }

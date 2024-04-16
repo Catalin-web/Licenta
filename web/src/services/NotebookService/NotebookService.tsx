@@ -5,6 +5,7 @@ import { Settings } from '../Settings';
 import {
 	ScheduleNotebookRequest,
 	ScheduledNotebook,
+	ScheduledNotebookStatisticsResponse,
 } from './NotebookServiceModels';
 
 export class NotebookService {
@@ -37,5 +38,12 @@ export class NotebookService {
 			`${this.baseUrl}/notebookService/scheduleNotebook/schedule`,
 			scheduleNotebookRequest,
 		);
+	}
+
+	public async getStatisticsAsync(): Promise<ScheduledNotebookStatisticsResponse> {
+		let response = await axios.get<ScheduledNotebookStatisticsResponse>(
+			`${this.baseUrl}/notebookService/scheduleNotebook/statistics`,
+		);
+		return response.data;
 	}
 }

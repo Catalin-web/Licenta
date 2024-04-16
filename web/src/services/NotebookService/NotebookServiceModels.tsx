@@ -108,3 +108,25 @@ export interface ScheduleNotebookRequest {
 export interface ScheduleNotebookNodeRequest {
 	notebookNodeId: string;
 }
+
+export interface ScheduledNotebookStatisticsResponse {
+	numberOfCreatedNotebooks: number;
+	numberOfQueuedNotebooks: number;
+	numberOfInProgressNotebooks: number;
+	numberOfCompletedNotebooks: number;
+	numberOfFailedNotebooks: number;
+	numberOfSuccedeNotebooks: number;
+}
+
+export interface NotebookGraphStatisticsResponse {
+	numberOfNotebookGraphs: number;
+	numberOfInprogressGraphs: number;
+	numberOfSuccededGraphs: number;
+	numberOfFailedGraphs: number;
+	numberOfCreatedNotebooks: number;
+	numberOfQueuedNotebooks: number;
+	numberOfInProgressNotebooks: number;
+	numberOfCompletedNotebooks: number;
+	numberOfFailedNotebooks: number;
+	numberOfSuccedeNotebooks: number;
+}

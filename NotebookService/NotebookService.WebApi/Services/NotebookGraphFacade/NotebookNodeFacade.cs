@@ -5,7 +5,7 @@ using NotebookService.Models.Entities.NotebookGraph;
 using NotebookService.Models.Entities.ScheduleNotebook;
 using NotebookService.Models.Requests.NotebookGraph;
 using NotebookService.Models.Responses.NotebookGraph;
-using ZstdSharp.Unsafe;
+using NotebookService.Models.Responses.Statistics;
 
 namespace NotebookService.WebApi.Services.NotebookGraphFacade
 {
@@ -216,6 +216,96 @@ namespace NotebookService.WebApi.Services.NotebookGraphFacade
                 ScheduleNotebook = currentScheduledNotebook,
                 ChildGraphs = childGraphs
             };
+        }
+
+        public async Task<NotebookGraphStatisticsResponse> GetNotebookGraphStatistics()
+        {
+            var allNotebooks = (await _scheduleNotebookProvider.GetAllAsync(scheduledNotebook => !string.IsNullOrEmpty(scheduledNotebook.GraphUniqueId))).ToList();
+            allNotebooks.AddRange(await _scheduleNotebookHistoryProvider.GetAllAsync(scheduledNotebook => !string.IsNullOrEmpty(scheduledNotebook.GraphUniqueId)));
+            var statistics = new NotebookGraphStatisticsResponse()
+            {
+                NumberOfNotebookGraphs = 0,
+                NumberOfInprogressGraphs = 0,
+                NumberOfSuccededGraphs = 0,
+                NumberOfFailedGraphs = 0,
+                NumberOfCreatedNotebooks = 0,
+                NumberOfQueuedNotebooks = 0,
+                NumberOfInProgressNotebooks = 0,
+                NumberOfCompletedNotebooks = 0,
+                NumberOfFailedNotebooks = 0,
+                NumberOfSuccedeNotebooks = 0,
+            };
+            foreach (var notebook in allNotebooks)
+            {
+                switch (notebook.Progress)
+                {
+                    case Progress.CREATED:
+                        {
+                            statistics.NumberOfCreatedNotebooks += 1;
+                            break;
+                        }
+                    case Progress.QUEUED:
+                        {
+                            statistics.NumberOfQueuedNotebooks += 1;
+                            break;
+                        }
+                    case Progress.IN_PROGRESS:
+                        {
+                            statistics.NumberOfInProgressNotebooks += 1;
+                            break;
+                        }
+                    case Progress.COMPLETED:
+                        {
+                            statistics.NumberOfCompletedNotebooks += 1;
+                            break;
+                        }
+                }
+                switch (notebook.Status)
+                {
+                    case Status.FAILED:
+                        {
+                            statistics.NumberOfFailedNotebooks += 1;
+                            break;
+                        }
+                    case Status.SUCCEDED:
+                        {
+                            statistics.NumberOfSuccedeNotebooks += 1;
+                            break;
+                        }
+                }
+            }
+            var allNotebookGraphs = await GetAllStartingNotebookNodes();
+            statistics.NumberOfNotebookGraphs = allNotebookGraphs.Count();
+            var distinctUniqueGraphs = allNotebooks.Select(x => x.GraphUniqueId).Distinct();
+            foreach (var graph in distinctUniqueGraphs)
+            {
+                var failedNotebooks = 0;
+                var inProgressNotebooks = 0;
+                foreach (var notebook in allNotebooks.Where(notebook => notebook.GraphUniqueId == graph))
+                {
+                    if (notebook.Status == Status.FAILED)
+                    {
+                        failedNotebooks++;
+                    }
+                    if (notebook.Status == Status.NONE)
+                    {
+                        inProgressNotebooks++;
+                    }
+                }
+                if (inProgressNotebooks > 0)
+                {
+                    statistics.NumberOfInprogressGraphs += 1;
+                }
+                if (failedNotebooks > 0)
+                {
+                    statistics.NumberOfFailedGraphs += 1;
+                }
+                if (inProgressNotebooks == 0 && failedNotebooks == 0)
+                {
+                    statistics.NumberOfSuccededGraphs += 1;
+                }
+            }
+            return statistics;
         }
     }
 }

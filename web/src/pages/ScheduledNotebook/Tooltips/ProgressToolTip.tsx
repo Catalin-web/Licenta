@@ -11,21 +11,21 @@ function ProgressToolTip(props: { progress: Progress }) {
 		<>
 			{props.progress === Progress.CREATED && (
 				<Tooltip title='Created'>
-					<AccessAlarmIcon />
+					<AccessAlarmIcon color={'info'} />
 				</Tooltip>
 			)}
 			{props.progress === Progress.IN_PROGRESS && (
 				<Tooltip title='In progress'>
-					<CircularProgress />
+					<CircularProgress color='info' />
 				</Tooltip>
 			)}
 			{props.progress === Progress.COMPLETED && (
 				<Tooltip title='Completed'>
-					<DoneIcon />
+					<DoneIcon color='success' />
 				</Tooltip>
 			)}
 			{props.progress === Progress.QUEUED && (
-				<Tooltip title='Queued'>
+				<Tooltip title='Queued' color='info'>
 					<TimerIcon />
 				</Tooltip>
 			)}

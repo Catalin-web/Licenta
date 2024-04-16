@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NotebookService.Models.Entities.ScheduleNotebook;
 using NotebookService.Models.Requests;
+using NotebookService.Models.Responses.Statistics;
 using NotebookService.WebApi.Services.ScheduleNotebookFacade;
 
 namespace NotebookService.WebApi.Controllers
@@ -104,6 +105,25 @@ namespace NotebookService.WebApi.Controllers
             try
             {
                 return Ok(await _scheduleNotebookFacade.GetAllHistoryOfScheduledNotebook());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
+        /// <summary>
+        /// Get statistics of all scheduled notebooks
+        /// </summary>
+        /// <response code="200">Get statistics of all scheduled notebooks.</response>
+        [HttpGet]
+        [Route("statistics")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<ScheduledNotebookStatisticsResponse>> GetScheduledNotebookStatistics()
+        {
+            try
+            {
+                return Ok(await _scheduleNotebookFacade.GetScheduledNotebooksStatistics());
             }
             catch (Exception ex)
             {

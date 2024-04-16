@@ -4,6 +4,7 @@ using NotebookService.DataStore.Mongo.ScheduleNotebookProvider;
 using NotebookService.Models.Entities.NotebookGraph;
 using NotebookService.Models.Entities.ScheduleNotebook;
 using NotebookService.Models.Requests;
+using NotebookService.Models.Responses.Statistics;
 
 namespace NotebookService.WebApi.Services.ScheduleNotebookFacade
 {
@@ -106,6 +107,61 @@ namespace NotebookService.WebApi.Services.ScheduleNotebookFacade
         public async Task<IEnumerable<ScheduledNotebook>> GetAllHistoryOfScheduledNotebook()
         {
             return await _scheduleNotebookHistoryProvider.GetAllAsync(notebook => true);
+        }
+
+        public async Task<ScheduledNotebookStatisticsResponse> GetScheduledNotebooksStatistics()
+        {
+            var allNotebooks = (await GetAllScheduledNotebooks()).ToList();
+            allNotebooks.AddRange(await GetAllHistoryOfScheduledNotebook());
+            var statistics = new ScheduledNotebookStatisticsResponse()
+            {
+                NumberOfCreatedNotebooks = 0,
+                NumberOfQueuedNotebooks = 0,
+                NumberOfInProgressNotebooks = 0,
+                NumberOfCompletedNotebooks = 0,
+                NumberOfFailedNotebooks = 0,
+                NumberOfSuccedeNotebooks = 0,
+            };
+            foreach (var notebook in  allNotebooks)
+            {
+                switch (notebook.Progress)
+                {
+                    case Progress.CREATED:
+                        {
+                            statistics.NumberOfCreatedNotebooks += 1;
+                            break;
+                        }
+                    case Progress.QUEUED:
+                        {
+                            statistics.NumberOfQueuedNotebooks += 1;
+                            break;
+                        }
+                    case Progress.IN_PROGRESS:
+                        {
+                            statistics.NumberOfInProgressNotebooks += 1;
+                            break;
+                        }
+                    case Progress.COMPLETED:
+                        {
+                            statistics.NumberOfCompletedNotebooks += 1;
+                            break;
+                        }
+                }
+                switch (notebook.Status)
+                {
+                    case Status.FAILED:
+                        {
+                            statistics.NumberOfFailedNotebooks += 1;
+                            break;
+                        }
+                    case Status.SUCCEDED:
+                        {
+                            statistics.NumberOfSuccedeNotebooks += 1;
+                            break;
+                        }
+                }
+            }
+            return statistics;
         }
     }
 }
