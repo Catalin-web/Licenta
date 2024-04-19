@@ -28,6 +28,14 @@ namespace NotebookService.WebApi.Settings
             }
         }
 
+        public string JobConnectionString
+        {
+            get
+            {
+                return Environment.GetEnvironmentVariable("NOTEBOOKSERVICE_JOB_CONNECTION_STRING") ?? "host=postgres;Port=5432;Database=app;User Id=admin;Password=admin;";
+            }
+        }
+
         public TimeSpan ScheduleNotebookDelay
         {
             get

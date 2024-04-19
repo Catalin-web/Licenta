@@ -20,6 +20,7 @@ namespace NotebookService.WebApi
             services.SetupDatabase();
             services.SetupServices(settingsProvider);
             services.SetupBackgroundServices();
+            services.SetupJobs(settingsProvider);
             services.AddCors();
 
             services.AddControllers(options =>

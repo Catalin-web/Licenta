@@ -15,28 +15,12 @@ namespace Userservice.WebApi.Services.UserFacade
 
         public async Task<User> GetUserById(string userId)
         {
-            try
-            {
-                return await _users.GetAsync(user => user.Id == userId);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                return null;
-            }
+            return await _users.GetAsync(user => user.Id == userId);
         }
 
         public async Task<User> Login(LoginRequest request)
         {
-            try
-            {
-                return await _users.GetAsync(user => user.Email == request.Email && user.Password == request.Password);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                return null;
-            }
+            return await _users.GetAsync(user => user.Email == request.Email && user.Password == request.Password);
         }
 
         public async Task<User> Register(RegisterRequest request)
@@ -44,17 +28,15 @@ namespace Userservice.WebApi.Services.UserFacade
             var user = new User()
             {
                 Email = request.Email,
-                Password = request.Password
+                Password = request.Password,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
             };
-            try
-            {
-                await _users.InsertAsync(user);
-                return await _users.GetAsync(user => user.Email == request.Email && user.Password == request.Password);
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
+            
+            await _users.InsertAsync(user);
+            
+            return user;
         }
+
     }
 }

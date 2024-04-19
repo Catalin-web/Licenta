@@ -9,9 +9,9 @@ namespace Userservice.WebApi.Controllers
     namespace Server.WebApi.Controllers
     {
         [ApiController]
-        [Route("user")]
+        [Route("userService")]
         [Produces(MediaTypeNames.Application.Json)]
-        public class UserController
+        public class UserController : ControllerBase
         {
             private readonly IUserFacade _userFacade;
             public UserController(IUserFacade userFacade)
@@ -24,12 +24,19 @@ namespace Userservice.WebApi.Controllers
             /// </summary>
             /// <response code="200">Register.</response>
             [HttpPost]
-            [Route("create")]
+            [Route("register")]
             [Consumes(MediaTypeNames.Application.Json)]
             [ProducesResponseType(StatusCodes.Status200OK)]
-            public async Task<User> CreateUser(RegisterRequest request)
+            public async Task<ActionResult<User>> CreateUser(RegisterRequest request)
             {
-                return await _userFacade.Register(request);
+                try
+                {
+                    return Ok(await _userFacade.Register(request));
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
 
             /// <summary>
@@ -37,25 +44,39 @@ namespace Userservice.WebApi.Controllers
             /// </summary>
             /// <response code="200">Login.</response>
             [HttpPost]
-            [Route("get")]
+            [Route("login")]
             [Consumes(MediaTypeNames.Application.Json)]
             [ProducesResponseType(StatusCodes.Status200OK)]
-            public async Task<User> Login(LoginRequest request)
+            public async Task<ActionResult<User>> Login(LoginRequest request)
             {
-                return await _userFacade.Login(request);
+                try
+                {
+                    return Ok(await _userFacade.Login(request));
+                }
+                catch(Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
 
             /// <summary>
             /// Get a user by id.
             /// </summary>
             /// <response code="200">Get a user by id.</response>
-            [HttpPost]
-            [Route("get/{userId}")]
+            [HttpGet]
+            [Route("user/{userId}")]
             [Consumes(MediaTypeNames.Application.Json)]
             [ProducesResponseType(StatusCodes.Status200OK)]
-            public async Task<User> GetUserById(string userId)
+            public async Task<ActionResult<User>> GetUserById(string userId)
             {
-                return await _userFacade.GetUserById(userId);
+                try
+                {
+                    return Ok(await _userFacade.GetUserById(userId));
+                }
+                catch(Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
         }
     }
