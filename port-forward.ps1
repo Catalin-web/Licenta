@@ -1,3 +1,8 @@
+# kubectl port-forward services/userservice 12500:12500 -n default
+# Open http://localhost:12500/users/swagger/index.html
+Start-Process kubectl -ArgumentList "port-forward services/userservice 12500:12500 -n default"
+Start-Process http://localhost:12500/users/swagger/index.html
+
 # kubectl port-forward services/fileservice 12600:12600 -n default
 # Open http://localhost:12600/files/swagger/index.html
 Start-Process kubectl -ArgumentList "port-forward services/fileservice 12600:12600 -n default"

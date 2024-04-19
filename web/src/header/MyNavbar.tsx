@@ -119,8 +119,12 @@ function MyNavbar() {
 						</Menu>
 					</Box>
 					<Box sx={{ flexGrow: 0, display: { xs: 'none', md: 'flex' } }}>
-						<Button color='inherit'>Login</Button>
-						<Button color='inherit'>Sign up</Button>
+						<Button color='inherit' href='/login'>
+							Login
+						</Button>
+						<Button color='inherit' href='/register'>
+							Sign up
+						</Button>
 					</Box>
 				</Toolbar>
 			</Container>

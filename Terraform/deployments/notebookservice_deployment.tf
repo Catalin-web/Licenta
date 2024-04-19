@@ -35,6 +35,10 @@ resource "kubernetes_deployment" "notebookservice_deployment" {
             value = "mongodb://mongodb.default.svc.cluster.local:27017/app"
           }
           env {
+            name  = "NOTEBOOKSERVICE_JOB_CONNECTION_STRING"
+            value = "host=postgres.default.svc.cluster.local;Port=5432;Database=app;User Id=admin;Password=admin;"
+          }
+          env {
             name  = "NOTEBOOKSERVICE_SCHEDULE_NOTEBOOK_DELAY"
             value = "1"
           }

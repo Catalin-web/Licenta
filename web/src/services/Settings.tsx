@@ -9,4 +9,7 @@ export class Settings {
 
 	public static readonly FILE_SERVICE_URL =
 		process.env.FILE_SERVICE_URL || 'http://localhost:12600';
+
+	public static readonly USER_SERVICE_URL =
+		process.env.USER_SERVICE_URL || 'http://localhost:12500';
 }
