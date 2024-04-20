@@ -11,6 +11,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import RegisterPage from './pages/Register/RegisterPage';
 import LoginPage from './pages/Login/LoginPage';
+import DashboardPage from './pages/Dashboard/DashboardPage';
 
 function App() {
 	return (
@@ -25,6 +26,7 @@ function App() {
 						path='/scheduledNotebooks'
 						element={<ScheduleNotebookPage />}
 					/>
+					<Route path='/dashboard' element={<DashboardPage />} />
 					<Route path='/register' element={<RegisterPage />} />
 					<Route path='/login' element={<LoginPage />} />
 				</Routes>

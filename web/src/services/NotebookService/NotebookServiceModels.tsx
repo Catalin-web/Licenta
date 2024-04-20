@@ -130,3 +130,47 @@ export interface NotebookGraphStatisticsResponse {
 	numberOfFailedNotebooks: number;
 	numberOfSuccedeNotebooks: number;
 }
+
+export interface TriggerNotebookJobModel {
+	id: string;
+	jobName: string;
+	notebookName: string;
+	inputParameters: NotebookParameter[];
+	inputParametersToGenerate: NotebookParameterToGenerate[];
+	outputParametersNames: string[];
+	jobId: string;
+	triggerId: string;
+	triggerJobInterval: number;
+	userId: string;
+}
+
+export interface TriggerNotebookJobHistoryModel {
+	id: string;
+	triggerNotebookJobId: string;
+	scheduledNotebookId: string;
+	triggerTime: string;
+}
+
+export interface TriggerNotebookGraphJobModel {
+	id: string;
+	jobName: string;
+	notebookNodeId: string;
+	jobId: string;
+	triggerId: string;
+	triggerJobInterval: number;
+	userId: string;
+}
+
+export interface TriggerNotebookGraphJobHistoryModel {
+	id: string;
+	triggerNotebookGraphJobId: string;
+	graphUniqueId: string;
+	triggerTime: string;
+}
+
+export enum DashboardPageSelected {
+	ScheduleNotebookJobs,
+	ScheduleNotebookHistoryJobs,
+	ScheduleGraphJobs,
+	ScheduleGraphHistoryJobs,
+}

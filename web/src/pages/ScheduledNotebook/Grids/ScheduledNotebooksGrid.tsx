@@ -21,12 +21,10 @@ function ScheduledNotebooksGrid(props: {
 }) {
 	return (
 		<>
-			<Grid item xs={1}></Grid>
-			<Grid item xs={11}>
+			<Grid item xs={12}>
 				<Typography>{props.gridName}</Typography>
 			</Grid>
-			<Grid item xs={1}></Grid>
-			<Grid item xs={9}>
+			<Grid item xs={12}>
 				<DataGrid
 					localeText={{ noRowsLabel: '' }}
 					initialState={{
@@ -91,7 +89,6 @@ function ScheduledNotebooksGrid(props: {
 					disableRowSelectionOnClick
 				/>
 			</Grid>
-			<Grid item xs={2}></Grid>
 		</>
 	);
 }

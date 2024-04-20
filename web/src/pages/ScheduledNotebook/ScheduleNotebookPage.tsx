@@ -221,53 +221,57 @@ function ScheduleNotebookPage() {
 					)}
 				</Grid>
 				<Grid item xs={1}></Grid>
-				<Grid item xs={1}></Grid>
-				<Grid item xs={1}>
-					<Button
-						onClick={handleOpenTriggerNotebookModal}
-						variant='contained'>
-						Schedule notebook
-					</Button>
+				<Grid item xs={10}>
+					<Grid container>
+						<Grid item xs={1}>
+							<Button
+								onClick={handleOpenTriggerNotebookModal}
+								variant='contained'>
+								Schedule notebook
+							</Button>
+						</Grid>
+						<Grid item xs={1} />
+						<Grid item xs={1}>
+							<Button onClick={handleOpenTriggerGraph} variant='contained'>
+								Schedule graph
+							</Button>
+						</Grid>
+						<Grid item xs={8} />
+						<Grid item xs={1}>
+							<Select
+								defaultValue={10}
+								onChange={(e) =>
+									setRefreshRateSeconds(Number(e.target.value))
+								}>
+								<MenuItem value={10}>10</MenuItem>
+								<MenuItem value={5}>5</MenuItem>
+								<MenuItem value={3}>3</MenuItem>
+								<MenuItem value={0}>Manual</MenuItem>
+							</Select>
+							<IconButton onClick={refreshData}>
+								<RefreshIcon />
+							</IconButton>
+						</Grid>
+						<ScheduledNotebooksGrid
+							scheduledNotebooks={currentlyScheduledNotebooks}
+							gridName='Currently running notebooks'
+							setCurentlyShowingScheduledNotebook={
+								setCurentlyShowingScheduledNotebook
+							}
+							setShowGraphDetails={setShowGraphDetails}
+							setShowNotebookDetails={setShowNotebookDetails}
+						/>
+						<ScheduledNotebooksGrid
+							scheduledNotebooks={completedScheduledNotebooks}
+							gridName='Completed notebooks'
+							setCurentlyShowingScheduledNotebook={
+								setCurentlyShowingScheduledNotebook
+							}
+							setShowGraphDetails={setShowGraphDetails}
+							setShowNotebookDetails={setShowNotebookDetails}
+						/>
+					</Grid>
 				</Grid>
-				<Grid item xs={1}>
-					<Button onClick={handleOpenTriggerGraph} variant='contained'>
-						Schedule graph
-					</Button>
-				</Grid>
-				<Grid item xs={2}></Grid>
-				<Grid item xs={4}></Grid>
-				<Grid item xs={2}>
-					<Select
-						defaultValue={10}
-						onChange={(e) => setRefreshRateSeconds(Number(e.target.value))}>
-						<MenuItem value={10}>10</MenuItem>
-						<MenuItem value={5}>5</MenuItem>
-						<MenuItem value={3}>3</MenuItem>
-						<MenuItem value={0}>Manual</MenuItem>
-					</Select>
-					<IconButton onClick={refreshData}>
-						<RefreshIcon />
-					</IconButton>
-				</Grid>
-				<Grid item xs={1}></Grid>
-				<ScheduledNotebooksGrid
-					scheduledNotebooks={currentlyScheduledNotebooks}
-					gridName='Currently running notebooks'
-					setCurentlyShowingScheduledNotebook={
-						setCurentlyShowingScheduledNotebook
-					}
-					setShowGraphDetails={setShowGraphDetails}
-					setShowNotebookDetails={setShowNotebookDetails}
-				/>
-				<ScheduledNotebooksGrid
-					scheduledNotebooks={completedScheduledNotebooks}
-					gridName='Completed notebooks'
-					setCurentlyShowingScheduledNotebook={
-						setCurentlyShowingScheduledNotebook
-					}
-					setShowGraphDetails={setShowGraphDetails}
-					setShowNotebookDetails={setShowNotebookDetails}
-				/>
 			</Grid>
 		</>
 	);

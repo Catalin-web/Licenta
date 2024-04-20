@@ -8,7 +8,10 @@ import {
 	NotebookNode,
 	NotebookScheduledGraph,
 	ScheduleNotebookNodeRequest,
+	TriggerNotebookGraphJobHistoryModel,
+	TriggerNotebookGraphJobModel,
 } from './NotebookServiceModels';
+import { UserService } from '../UserService/UserService';
 
 export class GraphService {
 	private readonly baseUrl: string;
@@ -70,6 +73,31 @@ export class GraphService {
 	public async getStatisticsAsync(): Promise<NotebookGraphStatisticsResponse> {
 		let response = await axios.get<NotebookGraphStatisticsResponse>(
 			`${this.baseUrl}/notebookService/notebookGraph/statistics`,
+		);
+		return response.data;
+	}
+
+	public async getNotebookGraphJobsCreatedByAuthenticatedUser(): Promise<
+		TriggerNotebookGraphJobModel[]
+	> {
+		let userClient = new UserService();
+		const user = await userClient.getLoggedUser();
+		if (!user) {
+			throw new Error('User not logged');
+		}
+		let response = await axios.get<TriggerNotebookGraphJobModel[]>(
+			`${this.baseUrl}/notebookService/jobs/notebookGraph/user/${user.id}`,
+		);
+		return response.data;
+	}
+
+	public async getNotebookGraphHistoryJobsByJobId(
+		triggerNotebookJobId: string,
+	): Promise<TriggerNotebookGraphJobHistoryModel[]> {
+		let response = await axios.get<
+			TriggerNotebookGraphJobHistoryModel[]
+		>(
+			`${this.baseUrl}/notebookService/jobs/notebookGraph/history/${triggerNotebookJobId}`,
 		);
 		return response.data;
 	}

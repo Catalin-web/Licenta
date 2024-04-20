@@ -30,6 +30,7 @@ namespace NotebookService.WebApi.Services.Jobs
             var triggerNotebookJobModel = new TriggerNotebookJobModel()
             {
                 JobName = request.JobName,
+                NotebookName = request.NotebookName,
                 InputParameters = request.InputParameters,
                 InputParameterstoGenerate = request.InputParameterstoGenerate,
                 OutputParametersNames = request.OutputParametersNames,

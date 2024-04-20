@@ -6,7 +6,10 @@ import {
 	ScheduleNotebookRequest,
 	ScheduledNotebook,
 	ScheduledNotebookStatisticsResponse,
+	TriggerNotebookJobHistoryModel,
+	TriggerNotebookJobModel,
 } from './NotebookServiceModels';
+import { UserService } from '../UserService/UserService';
 
 export class NotebookService {
 	private readonly baseUrl: string;
@@ -43,6 +46,29 @@ export class NotebookService {
 	public async getStatisticsAsync(): Promise<ScheduledNotebookStatisticsResponse> {
 		let response = await axios.get<ScheduledNotebookStatisticsResponse>(
 			`${this.baseUrl}/notebookService/scheduleNotebook/statistics`,
+		);
+		return response.data;
+	}
+
+	public async getNotebookJobsCreatedByAuthenticatedUser(): Promise<
+		TriggerNotebookJobModel[]
+	> {
+		let userClient = new UserService();
+		const user = await userClient.getLoggedUser();
+		if (!user) {
+			throw new Error('User not logged');
+		}
+		let response = await axios.get<TriggerNotebookJobModel[]>(
+			`${this.baseUrl}/notebookService/jobs/notebook/user/${user.id}`,
+		);
+		return response.data;
+	}
+
+	public async getNotebookHistoryJobsByJobId(
+		triggerNotebookJobId: string,
+	): Promise<TriggerNotebookJobHistoryModel[]> {
+		let response = await axios.get<TriggerNotebookJobHistoryModel[]>(
+			`${this.baseUrl}/notebookService/jobs/notebook/history/${triggerNotebookJobId}`,
 		);
 		return response.data;
 	}

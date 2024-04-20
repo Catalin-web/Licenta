@@ -43,7 +43,7 @@ namespace NotebookService.WebApi.Controllers
         [HttpGet]
         [Route("notebook/user/{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<TriggerNotebookJob>>> GetAllTriggerNotebookJobsForUser(string userId)
+        public async Task<ActionResult<IEnumerable<TriggerNotebookJobModel>>> GetAllTriggerNotebookJobsForUser(string userId)
         {
             try
             {
@@ -62,7 +62,7 @@ namespace NotebookService.WebApi.Controllers
         [HttpGet]
         [Route("notebook")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<TriggerNotebookJob>>> GetAllTriggerNotebookJobs()
+        public async Task<ActionResult<IEnumerable<TriggerNotebookJobModel>>> GetAllTriggerNotebookJobs()
         {
             try
             {
@@ -81,7 +81,7 @@ namespace NotebookService.WebApi.Controllers
         [HttpDelete]
         [Route("notebook/{triggerNotebookJobId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<TriggerNotebookJob>>> DeleteTriggerNotebook(string triggerNotebookJobId)
+        public async Task<ActionResult<IEnumerable<TriggerNotebookJobModel>>> DeleteTriggerNotebook(string triggerNotebookJobId)
         {
             try
             {
@@ -138,7 +138,7 @@ namespace NotebookService.WebApi.Controllers
         [HttpGet]
         [Route("notebookGraph/user/{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<TriggerNotebookGraphJob>>> GetAllTriggerNotebookGraphJobsForUser(string userId)
+        public async Task<ActionResult<IEnumerable<TriggerNotebookGraphJobModel>>> GetAllTriggerNotebookGraphJobsForUser(string userId)
         {
             try
             {
@@ -157,7 +157,7 @@ namespace NotebookService.WebApi.Controllers
         [HttpGet]
         [Route("notebookGraph")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<TriggerNotebookGraphJob>>> GetAllTriggerNotebookGraphJobs()
+        public async Task<ActionResult<IEnumerable<TriggerNotebookGraphJobModel>>> GetAllTriggerNotebookGraphJobs()
         {
             try
             {
@@ -176,7 +176,7 @@ namespace NotebookService.WebApi.Controllers
         [HttpDelete]
         [Route("notebookGraph/{triggerNotebookGraphJobId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<TriggerNotebookGraphJob>>> DeleteTriggerNotebookGraph(string triggerNotebookGraphJobId)
+        public async Task<ActionResult<IEnumerable<TriggerNotebookGraphJobModel>>> DeleteTriggerNotebookGraph(string triggerNotebookGraphJobId)
         {
             try
             {

@@ -84,6 +84,13 @@ function MyNavbar() {
 							sx={{ my: 2, color: 'white', display: 'block' }}>
 							Notebooks
 						</Button>
+						<Button
+							key='Dashboard'
+							onClick={handleCloseBigMenu}
+							href='/dashboard'
+							sx={{ my: 2, color: 'white', display: 'block' }}>
+							Dashboard
+						</Button>
 					</Box>
 					<Box sx={{ flexGrow: 0 }}>
 						<Menu
@@ -115,6 +122,13 @@ function MyNavbar() {
 								component={Link}
 								onClick={handleCloseBigMenu}>
 								Notebooks
+							</MenuItem>
+							<Divider />
+							<MenuItem
+								href='/dashboard'
+								component={Link}
+								onClick={handleCloseBigMenu}>
+								Dashboard
 							</MenuItem>
 						</Menu>
 					</Box>
