@@ -3,6 +3,7 @@
 import axios from 'axios';
 import { Settings } from '../Settings';
 import {
+	ScheduleNotebookJobRequest,
 	ScheduleNotebookRequest,
 	ScheduledNotebook,
 	ScheduledNotebookStatisticsResponse,
@@ -71,5 +72,17 @@ export class NotebookService {
 			`${this.baseUrl}/notebookService/jobs/notebook/history/${triggerNotebookJobId}`,
 		);
 		return response.data;
+	}
+
+	public async scheduleNotebookJobAsync(
+		scheduleNotebookJobRequest: ScheduleNotebookJobRequest,
+	): Promise<void> {
+		let response = await axios.post(
+			`${this.baseUrl}/notebookService/jobs/notebook`,
+			scheduleNotebookJobRequest,
+		);
+		if (response.status !== 200) {
+			throw new Error(response.statusText);
+		}
 	}
 }

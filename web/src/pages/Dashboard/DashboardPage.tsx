@@ -21,6 +21,8 @@ import DefinedJobsMiniPage from './NotebookJobsHistoryMiniPage';
 import NotebookJobsMiniPage from './NotebookJobsMiniPage';
 import NotebookGraphJobsMiniPage from './NotebookGraphJobsMiniPage';
 import NotebookGraphJobsHistoryMiniPage from './NotebookGraphJobsHistoryMiniPage';
+import PlaygroundMiniPage from './PlaygroundMiniPage';
+import InventoryIcon from '@mui/icons-material/Inventory';
 
 function DashboardPage() {
 	const [currentPageSelected, setCurrentPageSelected] =
@@ -34,6 +36,9 @@ function DashboardPage() {
 	};
 	const handleClickNotebook = () => {
 		setOpenNotebook(!openNotebook);
+	};
+	const handleClickPlayground = () => {
+		setCurrentPageSelected(DashboardPageSelected.PlaygroundPage);
 	};
 
 	return (
@@ -138,6 +143,14 @@ function DashboardPage() {
 									</ListItem>
 								</List>
 							</Collapse>
+							<ListItem disablePadding>
+								<ListItemButton onClick={handleClickPlayground}>
+									<ListItemIcon>
+										<InventoryIcon />
+									</ListItemIcon>
+									<ListItemText primary='Playground' />
+								</ListItemButton>
+							</ListItem>
 						</List>
 					</Box>
 				</Grid>
@@ -159,6 +172,8 @@ function DashboardPage() {
 							DashboardPageSelected.ScheduleGraphHistoryJobs && (
 							<NotebookGraphJobsHistoryMiniPage />
 						)}
+						{currentPageSelected ===
+							DashboardPageSelected.PlaygroundPage && <PlaygroundMiniPage />}
 					</Grid>
 				</Grid>
 			</Grid>

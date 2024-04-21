@@ -22,3 +22,8 @@ Start-Process http://localhost:12800/generatorservice/swagger/index.html
 # Open https://localhost:2746
 Start-Process kubectl -ArgumentList "port-forward services/argo-server 2746:2746 -n argo"
 Start-Process https://localhost:2746
+
+# kubectl --namespace=default port-forward service/proxy-public 8080:http
+# Open https://localhost:8080
+Start-Process kubectl -ArgumentList "--namespace=default port-forward service/proxy-public 8080:http"
+Start-Process http://localhost:8080

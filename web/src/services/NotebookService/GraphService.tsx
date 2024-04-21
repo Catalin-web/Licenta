@@ -7,6 +7,7 @@ import {
 	NotebookGraphStatisticsResponse,
 	NotebookNode,
 	NotebookScheduledGraph,
+	ScheduleNotebookGraphJobRequest,
 	ScheduleNotebookNodeRequest,
 	TriggerNotebookGraphJobHistoryModel,
 	TriggerNotebookGraphJobModel,
@@ -100,5 +101,17 @@ export class GraphService {
 			`${this.baseUrl}/notebookService/jobs/notebookGraph/history/${triggerNotebookJobId}`,
 		);
 		return response.data;
+	}
+
+	public async scheduleNotebookGraphJobAsync(
+		scheduleNotebookGraphJobRequest: ScheduleNotebookGraphJobRequest,
+	): Promise<void> {
+		let response = await axios.post(
+			`${this.baseUrl}/notebookService/jobs/notebookGraph`,
+			scheduleNotebookGraphJobRequest,
+		);
+		if (response.status !== 200) {
+			throw new Error(response.statusText);
+		}
 	}
 }

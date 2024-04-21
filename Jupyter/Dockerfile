@@ -1,8 +1,14 @@
-ARG JUPYTERHUB_VERSION
-FROM quay.io/jupyterhub/jupyterhub:$JUPYTERHUB_VERSION
+FROM quay.io/jupyterhub/k8s-hub:3.3.7
+
+
+USER ${NB_USER}
 
 RUN python3 -m pip install --no-cache-dir \
     dockerspawner \
     jupyterhub-nativeauthenticator
 
-CMD ["jupyterhub", "-f", "/srv/jupyterhub/jupyterhub_config.py"]
+COPY ./authenticator.py /custom/authenticator.py
+
+ENV PYTHONPATH "${PYTHONPATH}:/custom"
+
+# EXPOSE 8081

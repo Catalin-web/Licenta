@@ -173,4 +173,21 @@ export enum DashboardPageSelected {
 	ScheduleNotebookHistoryJobs,
 	ScheduleGraphJobs,
 	ScheduleGraphHistoryJobs,
+	PlaygroundPage,
+}
+
+export interface ScheduleNotebookJobRequest
+	extends ScheduleNotebookRequest {
+	jobName: string;
+	intervalInSeconds: number;
+	triggerNow: boolean;
+	userId: string;
+}
+
+export interface ScheduleNotebookGraphJobRequest
+	extends ScheduleNotebookNodeRequest {
+	jobName: string;
+	intervalInSeconds: number;
+	triggerNow: boolean;
+	userId: string;
 }

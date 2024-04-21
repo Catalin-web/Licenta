@@ -42,6 +42,10 @@ resource "kubernetes_deployment" "generatorservice" {
             name  = "OTEL_URL"
             value = "http://jaeger-all-in-one.default.svc.cluster.local:4317"
           }
+          env {
+            name  = "GENERATORSERVICE_DEFAULT_OPEN_SOURCE_MODEL_TO_GENERATE_PARAMETERS"
+            value = "llama3"
+          }
         }
       }
     }

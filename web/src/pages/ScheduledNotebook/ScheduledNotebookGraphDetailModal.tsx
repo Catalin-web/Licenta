@@ -22,12 +22,14 @@ import ScheduledNotebookUIGraph from './Graph/ScheduledNotebookUIGraph';
 import React from 'react';
 const style = {
 	position: 'absolute',
-	top: '50%',
-	left: '50%',
-	transform: 'translate(-50%, -50%)',
+	top: '10%',
+	left: '10%',
 	width: '80%',
 	bgcolor: 'background.paper',
 	border: '2px solid #000',
+	overflow: 'scroll',
+	height: '80%',
+	display: 'block',
 	boxShadow: 24,
 	p: 4,
 };
